@@ -31,6 +31,12 @@ jobs:
       - name: Repo — portability guard (self-verifying)
         run: node .github/scripts/portability.selftest.mjs
 
+      # 另一条仓库级检查：确认「真正会发布出去的 tarball」是完整的。
+      # files 白名单漏一个被 import 的文件时，本地怎么跑都是绿的，
+      # 消费者装完却缺文件 —— 这类失败原本谁也看不见。
+      - name: Repo — pack contents (what npm would publish)
+        run: node .github/scripts/pack-check.mjs
+
       # 这两个包没有依赖，只有 optional peerDependencies；npm install 只是为了拿到可解析的布局。
       - name: Install (no runtime deps)
         run: npm install --no-audit --no-fund

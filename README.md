@@ -56,6 +56,7 @@ Requires **Node >= 22.15** for the zlib zstd API. The plugins themselves have no
 cd packages/dsh-plugin-redact        && npm test   # engine 34 + handler 248 + torn-tail 11 + CLI smoke
 cd packages/dsh-plugin-content-policy && npm test  # the two pure suites: 45 + 36
 node .github/scripts/portability.selftest.mjs      # from the repo root
+node .github/scripts/pack-check.mjs                # from the repo root
 ```
 
 `.github/workflows/ci.yml` runs those same commands on `ubuntu-latest` and `windows-latest` across Node `22.15`, `22.x` and `24.x`. The suites that need a real DSH install are deliberately **not** in CI: they derive the install location from `DSH_HOME` and exit `3` when it is missing, rather than passing vacuously.
@@ -83,6 +84,12 @@ The first CI run failed after 37 s: `test/preflight.mjs` read `process.env.USERP
 The rule for `win-only-env` is deliberately about *the variable*, not the line: `DSH_HOME ?? path.join(process.env.USERPROFILE, '.dsh')` contains a `??` and is still broken.
 
 Its self-test is the point of it. `portability.selftest.mjs` **injects the real `USERPROFILE` defect back into `preflight.mjs`**, asserts that the guard fails and names both the file and the correct line, then restores the file in a `finally`. A guard that cannot fail is worse than no guard, and a line number hard-coded into the test is a guard that goes red for the wrong reason.
+
+#### Why there is a pack check
+
+The `files` allowlist in each `package.json` is maintained by hand, and `index.js` imports `lib/engine.mjs` while `bin/dsh-redact.mjs` imports it a second time. Add an import and forget the allowlist entry, and every check here stays green while the published package is missing a file — a failure that only the consumer can see.
+
+`.github/scripts/pack-check.mjs` asks npm what it would actually publish (`npm pack --dry-run --json`), then walks every relative import inside the shipped entry points and requires each resolved target to be in that tarball. It also asserts that nothing from a test run (`fixture.*`, `plan-*.json`, `needle.txt`, `broken.zstd`) rides along. Removing `lib/engine.mjs` from the allowlist makes it report both importers by name.
 
 ## License
 
