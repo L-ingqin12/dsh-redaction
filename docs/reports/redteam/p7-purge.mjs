@@ -7,7 +7,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { Session, headerFor, writeLog, ROOT } from './fixture.mjs'
 
-const mod = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/index.js').href)
+const mod = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js').href)
 fs.rmSync(ROOT, { recursive: true, force: true })
 fs.mkdirSync(ROOT, { recursive: true })
 const HOME = path.join(os.tmpdir(), 'rt-redact', 'home7')
@@ -62,7 +62,7 @@ const call = (raw) => captured.handler({ rawInput: raw, agent: { session: { id: 
 {
   const sentinel = path.join(os.tmpdir(), 'rt-redact', 'SENTINEL.json')
   fs.writeFileSync(sentinel, 'must survive')
-  for (const evil of ['..', '../..', '..\\..\\rt-redact', '*', 'target-session/*', '%USERPROFILE%/AppData/Local/Temp/rt-redact/SENTINEL', 'target-session.json']) {
+  for (const evil of ['..', '../..', '..\\..\\rt-redact', '*', 'target-session/*', '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/AppData/Local/Temp/rt-redact/SENTINEL', 'target-session.json']) {
     const r = await call(`purge --session "${evil}"`)
     assert(`C. session id "${evil}" 不能删除 cache 之外的文件`, fs.existsSync(sentinel), r.text.split('\n')[0])
   }

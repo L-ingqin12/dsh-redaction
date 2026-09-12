@@ -10,7 +10,7 @@ import zlib from 'node:zlib'
 import { pathToFileURL } from 'node:url'
 import { Session, headerFor, writeLog, backendOpen, ROOT } from './fixture.mjs'
 
-const { applyPlan, scanFrames } = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/lib/engine.mjs').href)
+const { applyPlan, scanFrames } = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/lib/engine.mjs').href)
 fs.rmSync(ROOT, { recursive: true, force: true })
 fs.mkdirSync(ROOT, { recursive: true })
 

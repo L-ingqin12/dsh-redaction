@@ -19,13 +19,13 @@ const RUNS = Number(ARGS[0] ?? 5)
 const INSTALLER = ARGS[1] ?? 'dialogs'
 
 const DSH =
-  'file:///%USERPROFILE%/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/'
+  'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/'
 const TUI_LIB =
-  'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/'
+  'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/'
 const COMMANDS_MOD = DSH + 'dsh-commands/lib/index.js'
 const INSTALLER_MOD = INSTALLER === 'extensions' ? TUI_LIB + 'extensions.js' : TUI_LIB + 'dsh-adapter/dialogs.js'
 const DIALOGS_MOD = TUI_LIB + 'dsh-adapter/dialogs.js'
-const REDACT = 'file:///%USERPROFILE%/dsh-plugin-redact/index.js'
+const REDACT = 'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js'
 
 // Only the tiny local plugin is pre-imported; the dsh-tui adapter module must
 // stay COLD so its import cost is the real one.

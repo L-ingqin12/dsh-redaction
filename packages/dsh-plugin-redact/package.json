@@ -24,7 +24,8 @@
     "test/preflight.mjs",
     "README.md",
     "README.zh.md",
-    "LICENSE"
+    "LICENSE",
+    "test/torn-recovery.mjs"
   ],
   "engines": {
     "node": ">=22.15.0"
@@ -58,6 +59,6 @@
     }
   },
   "scripts": {
-    "test": "node test/handler.selftest.mjs && node test/preflight.mjs"
+    "test": "node test/handler.selftest.mjs && node test/torn-recovery.mjs && node test/preflight.mjs"
   }
 }

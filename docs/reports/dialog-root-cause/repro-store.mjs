@@ -6,7 +6,7 @@
  * Question answered: what does the CALLER observe over time, and what does the
  * UI see? Also measures the 15 s bound end to end.
  */
-const url = 'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
+const url = 'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
 const { TuiDialogStore, DIALOG_DEFAULT_TIMEOUT_MS } = await import(url)
 
 const t0 = Date.now()

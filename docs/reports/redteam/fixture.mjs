@@ -9,7 +9,7 @@ import path from 'node:path'
 import zlib from 'node:zlib'
 import { pathToFileURL } from 'node:url'
 
-export const LIB = '%USERPROFILE%/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/'
+export const LIB = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/'
 export const imp = (p) => import(pathToFileURL(LIB + p).href)
 
 export const ROOT = path.join(os.tmpdir(), 'rt-redact', 'root')

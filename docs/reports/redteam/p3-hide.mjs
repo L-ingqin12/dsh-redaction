@@ -10,7 +10,7 @@ import { pathToFileURL } from 'node:url'
 import { Session, headerFor, imp } from './fixture.mjs'
 
 const { foldSurfaceProjection } = await imp('dsh-token-meter/lib/types/surface-projection.js')
-const mod = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/index.js').href)
+const mod = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js').href)
 
 let fail = 0
 const assert = (name, ok, detail = '') => { if (!ok) fail += 1; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? '  — ' + detail : ''}`) }

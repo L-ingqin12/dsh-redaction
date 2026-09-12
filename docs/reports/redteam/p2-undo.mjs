@@ -13,7 +13,7 @@ fs.rmSync(ROOT, { recursive: true, force: true })
 fs.rmSync(CACHE, { recursive: true, force: true })
 fs.mkdirSync(ROOT, { recursive: true })
 
-const mod = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/index.js').href)
+const mod = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js').href)
 let captured = null
 const ctx = { commands: { register: (d) => { captured = d } }, get: () => undefined }
 mod.apply(ctx, { root: ROOT, cacheRoot: CACHE, placeholder: '[已移除]' })

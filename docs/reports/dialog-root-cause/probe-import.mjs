@@ -1,6 +1,6 @@
 // Probe 1: can we import the REAL dialogs.js module (and therefore the real
 // TuiDialogStore / TuiDialogRuntime) from outside the TUI package?
-const url = 'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
+const url = 'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
 try {
   const mod = await import(url)
   console.log('IMPORT OK')

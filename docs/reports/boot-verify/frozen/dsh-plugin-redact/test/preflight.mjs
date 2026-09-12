@@ -1,7 +1,7 @@
 // 起飞前检查：模块可导入、命令可注册、list 子命令可跑通（只读目录元数据，不读内容）。
 import path from 'node:path'
 
-const mod = await import('file:///%USERPROFILE%/dsh-plugin-redact/index.js')
+const mod = await import('file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js')
 console.log('导出名        :', Object.keys(mod).join(', '))
 console.log('name          :', mod.name)
 console.log('inject        :', JSON.stringify(mod.inject))

@@ -26,7 +26,7 @@ const rows = [
 ]
 fs.writeFileSync(log, Buffer.concat([frame(header + '\n'), frame(rows.join('\n') + '\n')]))
 
-const mod = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/index.js').href)
+const mod = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js').href)
 let captured = null
 mod.apply({ commands: { register: (d) => { captured = d } }, get: () => undefined }, { root: sessionsRoot, cacheRoot: path.join(root, 'storages'), placeholder: '[已移除]' })
 const call = (raw) => captured.handler({ rawInput: raw, agent: { session: { id: 'other-session' } } })

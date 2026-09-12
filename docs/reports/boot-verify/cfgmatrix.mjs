@@ -7,7 +7,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
-const NODE = '%USERPROFILE%\\nodejs-x64\\node-v22.21.0-win-x64\\node.exe'
+const NODE = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '\\nodejs-x64\\node-v22.21.0-win-x64\\node.exe'
 
 // [label, configJson]  — JSON text so `null`/strings/numbers survive verbatim
 const CASES = [
@@ -47,7 +47,7 @@ for (const [label, cfg] of CASES) {
   const argv = cfg === undefined ? ['redactNoConfig', '8000'] : ['redactCfgFile', '8000']
   const r = spawnSync(NODE, [path.join(HERE, 'probe.mjs'), ...argv], {
     encoding: 'utf8',
-    env: { ...process.env, DSH_HOME: '%USERPROFILE%\\.dsh' },
+    env: { ...process.env, DSH_HOME: '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '\\.dsh' },
   })
   let out
   try { out = JSON.parse(r.stdout.trim().split('\n')[0]) } catch { out = { outcome: `RAW(${r.status}) ${r.stdout.slice(0, 160)}` } }

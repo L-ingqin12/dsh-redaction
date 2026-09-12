@@ -8,7 +8,7 @@ import zlib from 'node:zlib'
 import crypto from 'node:crypto'
 import { pathToFileURL } from 'node:url'
 
-const { applyPlan, checkSeqDensity, inspectBuffer, loadLog, scanFrames } = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/lib/engine.mjs').href)
+const { applyPlan, checkSeqDensity, inspectBuffer, loadLog, scanFrames } = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/lib/engine.mjs').href)
 
 const DIR = path.join(os.tmpdir(), 'rt-redact', 'scale')
 fs.rmSync(DIR, { recursive: true, force: true })

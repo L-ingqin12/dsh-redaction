@@ -4,7 +4,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const root = '%USERPROFILE%\\.dsh\\profiles\\node_modules'
+const root = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '\\.dsh\\profiles\\node_modules'
 let real = []
 let links = []
 let broken = []
@@ -47,7 +47,7 @@ console.log('broken links       =', broken.length)
 for (const r of broken) console.log('   ', r.name, '->', r.target)
 
 // The same check for the two plugin links inside the profile itself
-const prof = '%USERPROFILE%\\.dsh\\profiles\\dsh-tui\\node_modules'
+const prof = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '\\.dsh\\profiles\\dsh-tui\\node_modules'
 for (const n of ['dsh-plugin-redact', 'dsh-plugin-content-policy']) {
   const full = path.join(prof, n)
   const st = fs.lstatSync(full)

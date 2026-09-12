@@ -9,7 +9,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'
 import { pathToFileURL } from 'node:url'
-const { applyPlan, checkSeqDensity, scanFrames } = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/lib/engine.mjs').href)
+const { applyPlan, checkSeqDensity, scanFrames } = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/lib/engine.mjs').href)
 import { Session, headerFor, writeLog, backendOpen, ROOT, rmrf, imp, decodeRows } from './fixture.mjs'
 
 rmrf(ROOT)

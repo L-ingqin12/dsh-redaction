@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import path from 'node:path'
 import { readFileSync, writeFileSync } from 'node:fs'
 
-const DSHDIR = '%USERPROFILE%/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai'
+const DSHDIR = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai'
 const appBoot = await import(pathToFileURL(`${DSHDIR}/dsh-app-boot/lib/index.js`).href)
 const { boot, loadOptionalPatches } = appBoot
 
@@ -34,12 +34,12 @@ const prepare = (ctx) => {
   }
 }
 
-const redactPatch = loadOptionalPatches('dsh', '%USERPROFILE%/dsh-plugin-redact/cordis.patch.yml') ?? []
-const policyPatch = loadOptionalPatches('dsh', '%USERPROFILE%/dsh-plugin-content-policy/cordis.patch.yml') ?? []
+const redactPatch = loadOptionalPatches('dsh', '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/cordis.patch.yml') ?? []
+const policyPatch = loadOptionalPatches('dsh', '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-content-policy/cordis.patch.yml') ?? []
 const spillPatch = [{ id: 'spill-policy', config: { maxInlineBytes: 4000 } }]
 
 // The row-level inject now living in the REAL profile patch layer.
-const PROFILE_PATCH = '%USERPROFILE%/.dsh/profiles/dsh-tui/cordis.patch.yml'
+const PROFILE_PATCH = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/cordis.patch.yml'
 const profilePatches = loadOptionalPatches('dsh', PROFILE_PATCH) ?? []
 const redactRowPatch = profilePatches.filter((p) => p.id === 'dsh-redact')
 if (redactRowPatch.length !== 1) throw new Error(`expected exactly one dsh-redact patch, got ${redactRowPatch.length}`)

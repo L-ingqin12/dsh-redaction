@@ -12,8 +12,8 @@
 import { Context, Service, LoggerService } from '@deepseek-ai/cordis'
 
 const TUI_DIALOGS =
-  'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
-const REDACT = 'file:///%USERPROFILE%/dsh-plugin-redact/index.js'
+  'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
+const REDACT = 'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/index.js'
 
 const dialogsMod = await import(TUI_DIALOGS)
 const TuiDialogRuntime = dialogsMod.default
@@ -200,7 +200,7 @@ rec('version', { DIALOG_DEFAULT_TIMEOUT_MS, INPUT_CELLS, modExports: Object.keys
   // p0d: WHICH guard is order-dependent? (requirePluginCaller / bindCallerEffect)
   {
     const hostAccess = await import(
-      'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/host-access.js'
+      'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/host-access.js'
     )
     const rootEarly = await buildApp({ callerFirst: true, callerKey: 'early2' })
     const probeGuard = (tag, ctx, service) => {

@@ -23,7 +23,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const DEFAULT_INSTALL = '%USERPROFILE%\\nodejs-x64\\node-v22.21.0-win-x64\\node_modules\\@deepseek-ai\\dsh\\node_modules'
+const DEFAULT_INSTALL = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '\\nodejs-x64\\node-v22.21.0-win-x64\\node_modules\\@deepseek-ai\\dsh\\node_modules'
 const installRoot = process.env.DSH_NODE_MODULES ?? DEFAULT_INSTALL
 const packageRoot = path.resolve(import.meta.dirname, '..')
 const probeRoot = path.join(os.tmpdir(), `dsh-content-policy-schemastery-${process.pid}`)

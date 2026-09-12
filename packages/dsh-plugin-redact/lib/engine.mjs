@@ -830,7 +830,31 @@ export function applyPlan(buffer, plan) {
   }
 
   const tornKept = plan.keepTorn === true
-  if (tornStart !== undefined && tornKept) chunks.push(buffer.subarray(tornStart))
+  let recoveredRows = 0
+  if (tornStart !== undefined) {
+    if (tornKept) {
+      chunks.push(buffer.subarray(tornStart))
+    } else {
+      // 绝不能直接丢弃残帧：它里面可能有**完整**的 JSONL 行。
+      // 读取端自己就是这么做的（用 ZSTD_e_flush 解出前缀、只保留完整记录，再把它们重新落盘），
+      // 所以直接丢 = 我们比读取端更破坏数据：崩溃前那几行完整事件会凭空消失。
+      let plain = null
+      try {
+        plain = zlib.zstdDecompressSync(buffer.subarray(tornStart), { finishFlush: zlib.constants.ZSTD_e_flush })
+      } catch {
+        plain = null
+      }
+      const cut = plain === null ? -1 : plain.lastIndexOf(0x0a)
+      if (cut !== -1) {
+        const rowsBuf = plain.subarray(0, cut + 1)
+        recoveredRows = splitLines(rowsBuf).filter((l) => l.newline).length
+        chunks.push(zlib.zstdCompressSync(rowsBuf, CHECKSUM_OPTIONS))
+        notes.push(`尾部残帧中恢复出 ${recoveredRows} 行完整记录并重新落盘（未丢弃）`)
+      } else {
+        notes.push('尾部残帧里没有任何完整记录，已丢弃（属正常的不完整写入）')
+      }
+    }
+  }
 
   const out = Buffer.concat(chunks)
   // 总闸（F1+F2）：一遍解码，按读取端语义回放整份输出（JSON / 头部 / seq 密集 / 引用），
@@ -839,7 +863,7 @@ export function applyPlan(buffer, plan) {
   const check = verifyLog(out)
   if (!check.ok) die(`内部自检失败，已放弃输出（${check.reason}）`)
 
-  return { out, stats, notes, tornStart, tornKept }
+  return { out, stats: { ...stats, recoveredRows }, notes, tornStart, tornKept }
 }
 
 /** 逐行检查 seq === 行号（0-based），返回首个问题的描述或 null。 */

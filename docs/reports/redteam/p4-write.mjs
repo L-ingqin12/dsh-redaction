@@ -9,9 +9,9 @@ import { execFileSync, spawn } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 import { Session, headerFor, writeLog, backendOpen, frame, ROOT } from './fixture.mjs'
 
-const { applyPlan, checkSeqDensity, inspectBuffer, scanFrames } = await import(pathToFileURL('%USERPROFILE%/dsh-plugin-redact/lib/engine.mjs').href)
-const NODE = '%USERPROFILE%/nodejs-x64/node-v22.21.0-win-x64/node.exe'
-const CLI = '%USERPROFILE%/dsh-plugin-redact/bin/dsh-redact.mjs'
+const { applyPlan, checkSeqDensity, inspectBuffer, scanFrames } = await import(pathToFileURL('' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/lib/engine.mjs').href)
+const NODE = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/nodejs-x64/node-v22.21.0-win-x64/node.exe'
+const CLI = '' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/dsh-plugin-redact/bin/dsh-redact.mjs'
 
 fs.rmSync(ROOT, { recursive: true, force: true })
 fs.mkdirSync(ROOT, { recursive: true })

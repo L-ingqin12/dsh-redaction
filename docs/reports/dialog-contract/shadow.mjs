@@ -6,7 +6,7 @@
 import { Context, Service } from '@deepseek-ai/cordis'
 
 const TUI_LIB =
-  'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/'
+  'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/'
 const dialogsMod = await import(TUI_LIB + 'dsh-adapter/dialogs.js')
 const TuiDialogRuntime = dialogsMod.default
 

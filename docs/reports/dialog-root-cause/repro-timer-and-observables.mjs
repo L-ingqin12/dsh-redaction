@@ -5,7 +5,7 @@
  * Also probes whether the plugin could have pre-flighted: enumerate every
  * observable the plugin-facing `ctx.tuiDialogs` proxy exposes.
  */
-const url = 'file:///%USERPROFILE%/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
+const url = 'file:///' + (process.env.USERPROFILE ?? process.env.HOME ?? '') + '/.dsh/profiles/dsh-tui/node_modules/@deepseek-harness-tui/dsh-tui/lib/types/dsh-adapter/dialogs.js'
 const { TuiDialogStore, TuiDialogRuntime, DIALOG_DEFAULT_TIMEOUT_MS } = await import(url)
 
 // ── G. does the timer fire when the event loop is busy? ────────────────────
