@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: ['22.15', '22.x', '24.x']
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # 这两个包没有依赖，只有 optional peerDependencies；npm install 只是为了拿到可解析的布局。
+      - name: Install (no runtime deps)
+        run: npm install --no-audit --no-fund
+        working-directory: packages/dsh-plugin-redact
+
+      - name: dsh-plugin-redact — handler suite
+        run: node test/handler.selftest.mjs
+        working-directory: packages/dsh-plugin-redact
+
+      - name: dsh-plugin-redact — engine / CLI suite
+        run: node test/engine.selftest.mjs
+        working-directory: packages/dsh-plugin-redact
+
+      - name: dsh-plugin-redact — torn-tail recovery
+        run: node test/torn-recovery.mjs
+        working-directory: packages/dsh-plugin-redact
+
+      - name: dsh-plugin-redact — CLI smoke
+        run: node test/preflight.mjs
+        working-directory: packages/dsh-plugin-redact
+
+      - name: dsh-plugin-content-policy — pure suites
+        run: |
+          node test/selftest.mjs
+          node test/harness.mjs
+        working-directory: packages/dsh-plugin-content-policy
+
+      # 需要真实 DSH 安装的套件（handler 之外的 redact 套件、content-policy 的 e2e）在这里不跑：
+      # 它们从 DSH_HOME 推导安装位置，缺失时以退出码 3 明确失败，而不是静默变绿 —— 见各包 README。
