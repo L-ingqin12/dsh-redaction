@@ -86,6 +86,18 @@ gh repo edit <owner>/<repo> --add-topic dsh-plugin --add-topic dsh --add-topic d
 
 **The manifest gate** decides whether a listing is merely browsable or actually one-click installable (`manifest_verified`): `package.json` must declare `dsh.bundle.patch`, that file must exist, and it must be a **top-level YAML array** containing a loader entry whose `name` equals the npm package name. `pack-check.mjs` asserts all four, so this cannot silently regress.
 
+**In a monorepo, the root `package.json` is the discovery entry point.** A topic scan starts at `HEAD:package.json` and reads `dsh.bundles` — an array of bundle *directories* — then fetches `HEAD:<dir>/package.json` for each. Without a root `package.json` the array is empty and the packages are invisible to the scanner no matter what topics are set. Note the two different keys:
+
+```jsonc
+// root package.json — where the catalogues look, an array of directories
+"dsh": { "bundles": ["./packages/dsh-plugin-redact/"] }
+
+// packages/dsh-plugin-redact/package.json — the package itself, a single object
+"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+```
+
+`pack-check.mjs` also asserts that every package under `packages/` appears in the root `dsh.bundles`, so adding a third package cannot silently miss discovery.
+
 Two catalogues additionally want an explicit submission, which only a human can do: <https://www.dsh.so/submit> (returns a security scan) and the "Submit plugin" form on the leaderboard.
 
 A note on trust: these catalogues index what is public. Their presence is not a review — at least one states plainly that listing "does not include code review or runtime verification". Treat a listing as discovery, not as a safety signal, and read the source before installing anything that rewrites your session logs.

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-redaction",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo root for the dsh-redaction packages. Never published; it exists so plugin catalogues can discover the bundles below.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/L-ingqin12/dsh-redaction.git"
+  },
+  "homepage": "https://github.com/L-ingqin12/dsh-redaction#readme",
+  "bugs": {
+    "url": "https://github.com/L-ingqin12/dsh-redaction/issues"
+  },
+  "dsh": {
+    "bundles": [
+      "./packages/dsh-plugin-redact/",
+      "./packages/dsh-plugin-content-policy/"
+    ]
+  }
+}

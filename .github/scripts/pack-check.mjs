@@ -130,5 +130,46 @@ for (const pkg of PACKAGES) {
   }
 }
 
+// ── 仓库级：catalogue 是顺着根 package.json 的 `dsh.bundles` 找到子目录包的 ──
+// 依据：plugin.dshdesk.com 的 scripts/sync-plugins.mjs 先读 HEAD:package.json，
+// 再由 assets/bundle-manifest.js 的 listBundleDirectories() 取出 dsh.bundles 数组，
+// 逐个读 HEAD:<dir>/package.json。根目录没有 package.json 时该数组为空 ——
+// monorepo 里的包对扫描器等于不存在（topic 加了也扫不到）。
+console.log('\n=== 仓库根（catalogue 的发现入口）===')
+const rootPkgPath = path.join(ROOT, 'package.json')
+if (!fs.existsSync(rootPkgPath)) {
+  check('根 package.json 存在', false, '没有它，catalogue 发现不了 monorepo 子目录里的包')
+} else {
+  const rootPkg = JSON.parse(fs.readFileSync(rootPkgPath, 'utf8'))
+  const dirs = rootPkg.dsh?.bundles
+  check('根 package.json 存在', true)
+  check('根声明了 dsh.bundles 数组', Array.isArray(dirs) && dirs.length > 0, `实际：${JSON.stringify(dirs)}`)
+
+  const listed = new Set()
+  for (const d of Array.isArray(dirs) ? dirs : []) {
+    check(`  dsh.bundles 条目以 ./ 开头（${d}）`, typeof d === 'string' && d.startsWith('./'))
+    if (typeof d !== 'string') continue
+    const norm = d.replace(/^\.\//, '').replace(/\/+$/, '')
+    listed.add(norm)
+    const subPkgPath = path.join(ROOT, norm, 'package.json')
+    if (!fs.existsSync(subPkgPath)) {
+      check(`  ${norm} 下有 package.json`, false)
+      continue
+    }
+    const sub = JSON.parse(fs.readFileSync(subPkgPath, 'utf8'))
+    const patch = sub.dsh?.bundle?.patch
+    check(
+      `  ${norm} 的 dsh.bundle.patch 合规（./ 开头）`,
+      typeof patch === 'string' && patch.startsWith('./'),
+      `实际：${JSON.stringify(patch)}`,
+    )
+  }
+
+  // 新增了包却忘了登记，收录会静默漏掉 —— 这里拦住。
+  for (const pkg of PACKAGES) {
+    check(`  ${pkg} 已登记进 dsh.bundles`, listed.has(pkg))
+  }
+}
+
 console.log(`\n${pass} 项通过，${fail} 项失败`)
 process.exit(fail === 0 ? 0 : 1)
