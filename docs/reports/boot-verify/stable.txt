@@ -1,0 +1,25 @@
+===== attempt 1 =====
+BEFORE f9baf926748d795a 1ea235d3d36b0ff9 375387bc155d96c6 efecce117ff7b93a 26a75ced441119bf
+  real                     BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2] commands=["redact"]
+  realProfilePatch         BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2 x-dialogs:2] commands=["redact"]
+  profilePatchNoDialogs    BOOT_ABORTED  dsh-plugin-redact: pending (waiting for service: tuiDialogs)
+  profilePatchLateDialogs  BOOT_OK  entries=[include:2 dsh-redact:2 x-late-dialogs:2] commands=["redact"]
+  rowInjectAdditive        BOOT_ABORTED  dsh-plugin-redact: pending (waiting for service: commands)
+  cfg omitted              BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg {}                   BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg null                 BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg {bogus:1}            BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg argsCells:0          BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg argsCells:120        BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg argsCells:-1         BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+  cfg argsCells:1.5        BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+  cfg argsCells:"5000"     BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+  cfg argsCells:null       BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+  cfg dialogTimeoutMs:0    BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg dialogTimeoutMs:15000 BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+  cfg dialogTimeoutMs:-1   BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+  cfg dialogTimeoutMs:1.5  BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+  cfg dialogTimeoutMs:"5000" BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+  cfg dialogTimeoutMs:null BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+AFTER  f9baf926748d795a 1ea235d3d36b0ff9 375387bc155d96c6 efecce117ff7b93a 26a75ced441119bf
+STABLE: revision unchanged across the whole run

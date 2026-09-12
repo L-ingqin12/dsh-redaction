@@ -1,0 +1,18 @@
+== A. ~50MB 日志：时间与内存 ==
+      文件 25.8MB，26000 行，1041 帧
+      loadLog        : 419ms  RSS +60.9MB
+      解压后明文   : 53.9MB（loadLog 把每一帧的明文全留在内存里）
+      逐行 JSON.parse（readRows/planRollback 的做法）: 199ms  RSS +45.2MB  共 26001 行
+      applyPlan（所有帧重写）: 2033ms  输出 25.8MB
+      checkSeqDensity: 470ms（通过）— applyPlan 内部已跑过一次 inspectBuffer+checkSeqDensity
+      inspectBuffer  : 390ms
+      峰值 RSS: 417.6MB（原始文件 25.8MB）
+
+== B. 二次方项：帧数 × 行数 ==
+      帧数    11（每帧 2400 行，1.4MB）→ applyPlan    382ms
+      帧数   101（每帧  240 行，1.3MB）→ applyPlan    360ms
+      帧数  1001（每帧   24 行，1.5MB）→ applyPlan    490ms
+      （行数固定，只有帧数变化；applyPlan:406 每帧都 map+filter 全部行 → O(帧数×行数)）
+
+== C. Math.min(...dropIdx) 展开上限（renumber） ==
+      30 万行 renumber 删除：1979ms（未抛 RangeError）

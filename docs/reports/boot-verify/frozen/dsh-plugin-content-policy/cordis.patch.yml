@@ -1,0 +1,37 @@
+# dsh-plugin-content-policy —— 插入层
+#
+# 这一行只 CONSUME 宿主的 `tools` 服务（读注册表 + 监听 tools/execute、
+# tools/pre-execute、tools/ptc-dispatch-log），自身不发布任何服务，所以可以
+# 直接放在这里，不需要 isolate realm。
+#
+# 默认是**真空操作**：`rules: []` ⇒ 插件不注册任何监听器（与 dsh-spill-policy
+# 的 "omitted config ⇒ registers nothing" 约定一致）。
+#
+# 要真正启用，请在你自己的 profile patch 层（$DSH_HOME/profiles/<name>/cordis.patch.yml）
+# 里按 id 覆盖 config。注意：patch 是**整体替换** config 字段
+# （dsh-app-boot/lib/index.js:102-105 `target[key] = value`），不是深合并，
+# 所以覆盖时要把想保留的字段一并写全：
+#
+# - id: dsh-content-policy
+#   config:
+#     enabled: true
+#     maxScannedBytes: 4194304
+#     onBudgetExceeded: partial     # partial | error
+#     onUnsafeValue: keep           # keep | error
+#     notify: true
+#     rules:
+#       - id: phone
+#         match: { regex: '1[3-9]\\d{9}', flags: g }
+#         action: replace
+#         replacement: '[已移除]'
+#         tools: [web_search, web_fetch]
+#       - id: no-internal-host
+#         match: { literal: 'internal.example.com' }
+#         action: block
+#         tools: []                 # 空数组 = 所有工具
+- insert:
+    - id: dsh-content-policy
+      name: dsh-plugin-content-policy
+      config:
+        enabled: true
+        rules: []

@@ -1,0 +1,63 @@
+{
+  "name": "dsh-plugin-redact",
+  "version": "0.1.0",
+  "description": "In-place redaction and row-level rollback for DSH session logs (session.vN.jsonl.zstd), usable from inside dsh-tui.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./cordis.patch.tui.yml": "./cordis.patch.tui.yml",
+    "./engine": "./lib/engine.mjs",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "dsh-redact": "./bin/dsh-redact.mjs"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "cordis.patch.tui.yml",
+    "lib/engine.mjs",
+    "bin/dsh-redact.mjs",
+    "test/handler.selftest.mjs",
+    "test/preflight.mjs",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "session",
+    "redact",
+    "redaction",
+    "tui"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/dsh-commands": "^0.1.5-rc.2"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-commands": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "test": "node test/handler.selftest.mjs && node test/preflight.mjs"
+  }
+}

@@ -1,0 +1,36 @@
+PASS  inspect 帧数=4
+PASS  inspect 行数=8
+PASS  inspect 帧明细 4 条
+PASS  原始文件 seq 密集
+PASS  命中行号=3  — 命中行号       : 3
+PASS  命中输出不含原文
+PASS  paths 列出 data.text
+PASS  paths 不打印值
+PASS  原地改写：无删除  — 删除 / 清空    : 0 / 1 行
+PASS  原地改写后仍是 4 帧  — 实际 4
+PASS  原地改写后仍是 8 行
+PASS  原地改写后 seq 仍密集
+PASS  未触碰帧 0 原字节保留
+PASS  未触碰帧 1 原字节保留
+PASS  全局替换生效（第 5 行）  — epsilon [已移除]
+PASS  路径改写生效（第 6 行）
+PASS  清空生效（第 7 行）
+PASS  清空未破坏类型与 seq
+PASS  未指定行未被误改（第 3 行）
+PASS  原文已不可见
+PASS  中间行删除被拒绝（无 renumber）
+PASS  renumber 删除执行成功
+PASS  renumber 后 7 行
+PASS  renumber 后 seq 密集
+PASS  被删除行确已消失
+PASS  后续行 seq 已重编号
+PASS  后缀删除直接放行
+PASS  后缀删除后 seq 密集
+PASS  拒绝删除头部行
+PASS  拒绝清空头部行
+PASS  拒绝改写结构键 seq
+PASS  损坏文件被拒绝
+PASS  verify 正常退出
+PASS  plan 试算不写文件
+
+34/34 通过

@@ -1,0 +1,63 @@
+### branch=a -> REAL Schemastery
+
+-- undefined
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- LIVE profile config {enabled:true,rules:[]}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {maxScannedBytes: Infinity}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":null,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {maxScannedBytes: 0}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":0,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {maxScannedBytes: 1.5}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":1.5,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {onBudgetExceeded:"nope"}
+   ISSUES: $.onBudgetExceeded expected "partial" | "error" but got "nope" @onBudgetExceeded
+
+-- {enabled:"yes"}
+   ISSUES: $.enabled expected boolean but got yes @enabled
+
+-- {rules:[{id:"r",match:"x"}]}
+   VALUE: {"rules":[{"id":"r","match":"x","action":"replace","replacement":"[已移除]","tools":[]}],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {rules:[{match:"x"}]}
+   ISSUES: $.rules[0].id missing required value @rules.0.id
+
+-- {rules:"notarray"}
+   ISSUES: $.rules expected array but got notarray @rules
+
+-- {strip:[{id:"s",path:"content"}]}
+   VALUE: {"rules":[],"strip":[{"id":"s","tool":"*","path":"content"}],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {strip:[{id:"s",maxChars:10}]}
+   ISSUES: $.strip[0].path missing required value @strip.0.path
+
+-- {stripDefaults:true,strip:[]}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":true,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {onStripRefused:"skip"}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"skip","notify":true}
+
+-- {onStripRefused:"boom"}
+   ISSUES: $.onStripRefused expected "error" | "skip" but got "boom" @onStripRefused
+
+-- {bogus:1}
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true,"bogus":1}
+
+-- null
+   VALUE: {"rules":[],"strip":[],"enabled":true,"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- []
+   ISSUES: expected object but got 
+
+-- "str"
+   ISSUES: expected object but got str
+
+### module-level exports: Config,DEFAULT_REPLACEMENT,POLICY_CODE,STRIP_MARKER,WEB_SEARCH_STRIP_DEFAULTS,apply,inject,name

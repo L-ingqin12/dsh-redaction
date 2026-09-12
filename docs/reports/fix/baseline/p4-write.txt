@@ -1,0 +1,23 @@
+      → 写后+追加 = 1336B，ftruncate(1247) 之后 = 1247B（追加的 71B 帧消失）
+PASS  A. live 覆盖会在 write→truncate 窗口内吃掉并发追加的帧  — mid=1336 final=1247
+      → 之后 DSH 打开：ok=true events=20
+      → 半写状态：1267B，引擎 scanFrames 可解析=false 帧魔数非法 @ 字节 1252（不是本格式或已损坏）
+      → 引擎 inspectBuffer: frames=- lines=- parseErrors=- fatal=帧魔数非法 @ 字节 1252（不是本格式或已损坏）
+      → DSH 打开半写文件：ok=false SessionPersistenceCorruptionError: session "rt-live-crash": stored log is corrupt: Error: corrupt Zstandard session log: invalid frame magic at byte 1252
+PASS  B. 半写状态不是「无提示的安全状态」（要么打不开、要么静默少事件）  — 硬拒绝
+      → 第 1 轮：并发两次 apply → 备份 2 个，seq=ok lines=21
+node:fs:1583
+  const result = binding.readdir(
+                         ^
+
+Error: ENOENT: no such file or directory, scandir '%USERPROFILE%\AppData\Local\Temp\rt-redact\root\_no-cwd\rt-cli-race-1'
+    at Object.readdirSync (node:fs:1583:26)
+    at file:///%USERPROFILE%/dsh-redact-redteam/p4-write.mjs:99:22
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: '%USERPROFILE%\\AppData\\Local\\Temp\\rt-redact\\root\\_no-cwd\\rt-cli-race-1'
+}
+
+Node.js v22.21.0

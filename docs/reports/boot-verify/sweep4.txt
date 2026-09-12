@@ -1,0 +1,34 @@
+===== BEFORE =====
+3d92f8eedb50a9f0  %USERPROFILE%\dsh-plugin-redact\index.js
+1ea235d3d36b0ff9  %USERPROFILE%\dsh-plugin-redact\lib\engine.mjs
+be1ae81f9f5d2507  %USERPROFILE%\dsh-plugin-redact\cordis.patch.yml
+375387bc155d96c6  %USERPROFILE%\dsh-plugin-content-policy\index.js
+efecce117ff7b93a  %USERPROFILE%\dsh-plugin-content-policy\lib\scrub.mjs
+c6d21928f79ac9d3  %USERPROFILE%\dsh-plugin-content-policy\cordis.patch.yml
+real                     BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2] commands=["redact"]
+realEcho                 BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2 x-echo:2] commands=["redact"]
+realProfilePatch         BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2 x-dialogs:2] commands=["redact"]
+profilePatchNoDialogs    BOOT_ABORTED  dsh-plugin-redact: pending (waiting for service: tuiDialogs)
+profilePatchLateDialogs  BOOT_OK  entries=[include:2 dsh-redact:2 x-late-dialogs:2] commands=["redact"]
+rowInjectAdditive        BOOT_ABORTED  dsh-plugin-redact: pending (waiting for service: commands)
+dialogsAbsent            BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+dialogsBefore            BOOT_OK  entries=[include:2 x-dialogs:2 dsh-redact:2] commands=["redact"]
+dialogsAfter             BOOT_OK  entries=[include:2 dsh-redact:2 x-dialogs:2] commands=["redact"]
+throwImport              BOOT_ABORTED      at async Entry.update (file:///%USERPROFILE%/nodejs-x64/node-v22.21.0-win-x64/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/cordis-plugin-loader/lib
+throwApply               BOOT_ABORTED      at file:///%USERPROFILE%/AppData/Local/Temp/dsh-bootverify/#include
+hang                     BOOT_NEVER_SETTLED  __HANG__ after 6000ms
+missing                  BOOT_ABORTED      at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+pending                  BOOT_ABORTED  ./fix-pending.mjs: pending (waiting for service: neverProvidedService)
+badConfig                BOOT_ABORTED      at async Entry._init (file:///%USERPROFILE%/nodejs-x64/node-v22.21.0-win-x6
+badApply                 BOOT_ABORTED    
+dupRules                 BOOT_ABORTED      at file:///%USERPROFILE%/AppData/Local/Temp/dsh-bootverify/#include
+redactBadShape           BOOT_ABORTED      at file:///%USERPROFILE%/AppData/Local/Temp/dsh-bootverify/#include
+redactNoConfig           BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+redactNullConfig         BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+===== AFTER =====
+3d92f8eedb50a9f0  %USERPROFILE%\dsh-plugin-redact\index.js
+1ea235d3d36b0ff9  %USERPROFILE%\dsh-plugin-redact\lib\engine.mjs
+be1ae81f9f5d2507  %USERPROFILE%\dsh-plugin-redact\cordis.patch.yml
+375387bc155d96c6  %USERPROFILE%\dsh-plugin-content-policy\index.js
+efecce117ff7b93a  %USERPROFILE%\dsh-plugin-content-policy\lib\scrub.mjs
+c6d21928f79ac9d3  %USERPROFILE%\dsh-plugin-content-policy\cordis.patch.yml

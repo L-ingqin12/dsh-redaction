@@ -1,0 +1,20 @@
+      → 改写前：ok=true events=18（末尾 turn 4 未闭合）
+      → 会话 rt-rb-op · 共 3 轮 · 回退 1 轮 → 保留 2 轮 · 删 8 行（自第 12 行起截断） · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-31-15-136Z（仍含原文，确认无误后自行删除） · 缓存清理 0 · 下次打开…
+PASS  A. 回退成功  — 会话 rt-rb-op · 共 3 轮 · 回退 1 轮 → 保留 2 轮 · 删 8 行（自第 12 行起截断） · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-31-15-136Z（仍含原文，确认无误后自行删除） · 缓存清理 0 · 下次打开…
+FAIL  A. 回退后仍可打开  — Error: ENOENT: no such file or directory, stat '%USERPROFILE%\AppData\Local\Temp\rt-redact\root\_no-cwd\rt-rb-open\session.v3.jsonl.zstd'
+node:fs:561
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open '%USERPROFILE%\AppData\Local\Temp\rt-redact\root\_no-cwd\rt-rb-open\session.v3.jsonl.zstd'
+    at Object.openSync (node:fs:561:18)
+    at Object.readFileSync (node:fs:445:35)
+    at plainOf (file:///%USERPROFILE%/dsh-redact-redteam/p5-rollback.mjs:23:41)
+    at file:///%USERPROFILE%/dsh-redact-redteam/p5-rollback.mjs:48:13 {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '%USERPROFILE%\\AppData\\Local\\Temp\\rt-redact\\root\\_no-cwd\\rt-rb-open\\session.v3.jsonl.zstd'
+}
+
+Node.js v22.21.0

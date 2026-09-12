@@ -1,0 +1,18 @@
+      [debug] typeof mod.apply=function typeof handler=function
+      → 返回: kind=error text=第 2 个节点替换失败：模拟持久化失败（磁盘满 / 句柄失效） · 已有 1 个节点被永久遮蔽（seq 4），该变更已生效且不可撤销，建议重开会话
+      → 已提交事件: compaction/prune#7, tool/result#8, compaction/prune#9
+PASS  A. 命令报告失败
+PASS  A. 失败信息告知用户「已经有节点被改动」（半途状态）  — 第 2 个节点替换失败：模拟持久化失败（磁盘满 / 句柄失效） · 已有 1 个节点被永久遮蔽（seq 4），该变更已生效且不可撤销，建议重开会话
+PASS  A. 活会话里已有节点被改写（半途变更已生效）  — 已隐藏节点数=1
+      → 活 surface 节点数=3
+      → 真实 token-meter 折叠重放：未抛错（孤儿 claim 被下一个事件丢弃）
+      → 第二次 hide: 未命中任何 tool/result 节点，未做改动
+PASS  B. 第二次 hide 不重复改写（幂等，未命中）  — 未命中任何 tool/result 节点，未做改动
+      → 会话事件里是否仍有原文: true（hide 的已知语义：只移出模型视野）
+      → 活 surface 节点数=3，事件总数=11
+      → 返回: 第 1 个节点（seq 4）的消息形态不受支持（content 里没有可替换的文本块），未做改动
+PASS  C. content 为字符串时不会谎报「已隐藏」  — 第 1 个节点（seq 4）的消息形态不受支持（content 里没有可替换的文本块），未做改动
+      → 返回: kind=success text=未命中任何 tool/result 节点，未做改动
+PASS  D. 循环引用不会把异常抛出 handler  — 未命中任何 tool/result 节点，未做改动
+
+P3: 未发现半途变更类缺陷

@@ -1,0 +1,56 @@
+# dsh-plugin-redact — TUI 变体补丁层（含行级 inject）
+#
+# 什么时候用这个文件：
+#   你的 profile 挂载了 @deepseek-harness-tui/dsh-tui（也就是 dsh-tui 前端），
+#   并且你希望 /redact pick 的对话框面板**可靠弹出**。
+#
+# 为什么需要它：
+#   tuiDialogs 的运行时在 try/catch 之外还有一道「准入」守卫，要求调用方是一个
+#   **已登记在册的活跃非 root 激活**。该登记由第一个 dsh-tui 适配器模块安装
+#   composition-root tracker 时完成。若 dsh-redact 行比它更早进入 ACTIVE，
+#   每次 select/confirm 都只写一条 logger warning 并**直接返回取消值** ——
+#   面板不弹，用户只看到「已取消」。加行级 inject 后，Cordis 会等到该服务就绪
+#   再激活本行；实测最坏顺序下面板也从 0/6 变成 6/6。
+#
+# 也实测确认：行级 inject 是**追加**而不是替换 —— 模块静态声明的 `commands`
+# 仍然生效，所以这里写 [commands, tuiDialogs] 里的 commands 是重复声明，无害。
+#
+# ⚠️ 代价（务必知悉）：
+#   若你的 profile 里没有 tuiDialogs 的提供者（非 TUI 前端、或 dsh-tui-extensions
+#   行被 disable / 加载失败），这一行会永远 PENDING，而 dsh-app-boot 会把 PENDING
+#   行升级为致命错误 —— **整个 profile 起不来**，不是单行静默失败。
+#   所以：**只有在确定用 dsh-tui 前端时才套用这个文件。**
+#
+# ⚠️ 不要试图用 `disabled: !!js ![...ctx.loader.entries()].some(...)` 之类的
+#   自禁用守卫来自动二选一：Entry.disabled 是实时 getter，判据会随挂载进度翻转，
+#   实测会让整个 boot 中止（提供者排在后面时必炸）。
+#
+# ⚠️ 使用这个文件 = 你显式选择了模态对话框，并接受它的风险。
+#   pick 走的是 TuiDialogStore：一旦把 promise 停进去，Chat 会**无条件让出键盘**
+#   （Chat.js:2566）、输入框停用（PromptInput.js:2456）；而面板唯一的挂载点
+#   （Chat.js:3585）会被 approval 面板**无提示压掉**，approval 本身又没有超时。
+#   于是「有审批挂着时敲 /redact pick」必然锁住键盘，而且 Ctrl+C 都退不出
+#   （exitOnCtrlC: false），只能等 dialogTimeoutMs 超时。
+#   这就是为什么插件里 allowDialogs 默认 false、主路径是
+#   /redact nodes → /redact hide <序号> --commit（那条路径结构上不可能冻结）。
+#
+# 怎么用（三选一）：
+#   1) 把下面的行粘进你自己的 <profile>/cordis.patch.yml（推荐，最直观）；
+#   2) dsh --profile <name> --patch <此文件的绝对路径>
+#      （Windows 绝对路径需要 file:// URL，用 pathToFileURL 生成）；
+#   3) 只想要面板、不需要其它：直接照抄下面这段。
+#
+# 注意：patch 命中的行是**整个 config 被替换**（不是深合并），所以 config 字段必须写全。
+#
+# dialogTimeoutMs 默认 15000：这是「键盘被锁住」的上限，嫌短可调大，
+# 设 0 则彻底禁用对话框（pick 会退化为提示改用 nodes）。
+- insert:
+    - id: dsh-redact
+      name: dsh-plugin-redact
+      inject: [commands, tuiDialogs]
+      config:
+        root: !!js dshHomePath('sessions')
+        placeholder: '[已移除]'
+        cacheRoot: !!js dshHomePath('storages')
+        # 显式开启模态对话框（默认 false）。只想要 nodes + hide 的别用这个文件。
+        allowDialogs: true

@@ -1,0 +1,14 @@
+# dsh-plugin-redact — insert layer
+#
+# `root` uses the deployment's own path helper, exactly like the shipped
+# session-persistence-jsonl row, so it follows DSH_HOME wherever that points.
+#
+# The command row only CONSUMES the host `commands` service (it publishes
+# nothing), so it may sit loose here with no isolate realm.
+- insert:
+    - id: dsh-redact
+      name: dsh-plugin-redact
+      config:
+        root: !!js dshHomePath('sessions')
+        placeholder: '[已移除]'
+        cacheRoot: !!js dshHomePath('storages')

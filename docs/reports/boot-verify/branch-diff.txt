@@ -1,0 +1,45 @@
+cases compared                 : 29
+identical (order-insensitive)  : 11
+both reject (wording differs)  : 11
+STRUCTURAL (accept vs reject)  : 0
+THREW in either branch         : 0
+value/shape DIFFERENCES        : 7
+
+--- detail ---
+DIFF         {rules:[{id:"r",match:"x"}]}
+               - .rules[0]: key set [action,id,match,replacement,tools] vs [id,match]
+DIFF         {strip:[{id:"s",path:"content"}]}
+               - .strip[0]: key set [id,path,tool] vs [id,path]
+DIFF         {bogus:1}
+               - $: key set [bogus,enabled,maxScannedBytes,notify,onBudgetExceeded,onStripRefused,onUnsafeValue,rules,strip,stripDefaults] vs [enabled,maxScannedBytes,notify,onBudgetExceeded,onStripRefused,onUnsafeValue,rules,strip,stripDefaults]
+DIFF         {strip:[{id:"s",path:"sources.*.snippet",maxChars:40}]}
+               - .strip[0]: key set [id,maxChars,path,tool] vs [id,maxChars,path]
+DIFF         {strip:[{id:"s",path:"content",maxChars:1.5}]}
+               - .strip[0]: key set [id,maxChars,path,tool] vs [id,maxChars,path]
+DIFF         {strip:[{id:"s",path:"content",maxChars:0}]}
+               - .strip[0]: key set [id,maxChars,path,tool] vs [id,maxChars,path]
+DIFF         {stripDefaults:true,strip:[{id:"s",path:"content"}]}
+               - .strip[0]: key set [id,path,tool] vs [id,path]
+
+--- production (fallback) defaults for the whole config ---
+{
+ "enabled": true,
+ "rules": [],
+ "strip": [],
+ "stripDefaults": false,
+ "maxScannedBytes": 4194304,
+ "onBudgetExceeded": "partial",
+ "onUnsafeValue": "keep",
+ "onStripRefused": "error",
+ "notify": true
+}
+
+--- new 0.2.0 fields, fallback branch ---
+strip            present in 18/18 accepted configs; observed=[] | [{"id":"s","path":"content"}] | [{"id":"s","path":"sources.*.snippet","maxChars":40}] | [{"id":"s","path":"content","maxChars":1.5}] | [{"id":"s","path":"content","maxChars":0}]
+stripDefaults    present in 18/18 accepted configs; observed=false | true
+onStripRefused   present in 18/18 accepted configs; observed="error" | "skip"
+
+--- non-array rules / strip in the fallback branch ---
+{rules:"notarray"}     -> ISSUES :: rules 必须是数组 @rules
+{strip:"notarray"}     -> ISSUES :: strip 必须是数组 @strip
+{strip:{}}             -> ISSUES :: strip 必须是数组 @strip

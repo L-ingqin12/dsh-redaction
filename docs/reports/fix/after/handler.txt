@@ -1,0 +1,209 @@
+被测插件 index.js：45665B sha256:b8eeb35ea301
+被测引擎 engine.mjs：51755B
+临时夹具目录：%USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em（跑完即删）
+
+=== 0. 命令注册（假 ctx） ===
+PASS  apply() 恰好注册 1 个命令  — 实际 1
+PASS  命令名是 redact  — redact
+PASS  recordInput=false（匹配串不进输入历史）
+PASS  handler 是函数
+PASS  input.hint 列出六个必备子命令  — [list|nodes|scan|hide|plan|apply|verify|purge|rollback|undo] [plan.json] [--lines <n>] [--session <id>] [--commit]
+
+=== 1. list（当前会话标记 + 单行 / 200 显示格预算） ===
+PASS  list → kind:success  — success
+PASS  list 报告会话总数 16  — 共 16 个会话（按体积）：live-cur 2.5KB(当前) ｜ sess-14 1.8KB ｜ sess-13 1.7KB ｜ sess-12 1.6KB ｜ sess-11 1.5KB ｜ sess-10 1.3KB ｜ sess-09 1.2KB ｜ sess-08 1.1KB …另8个 用 /redact nodes 看当前会话
+PASS  ★ list 输出为单行  — "共 16 个会话（按体积）：live-cur 2.5KB(当前) ｜ sess-14 1.8KB ｜"
+PASS  ★ list 输出 <=200 显示格  — 字符 171
+PASS  list 列出会话条目且不超过显示格预算  — 实际 6
+PASS  list 标注被截断的剩余数量  — sess-08 1.1KB …另8个 用 /redact nodes 看当前会话
+PASS  当前会话被标记，且只有一条被标记  — live-cur vs live-cur
+PASS  list 打印人类可读体积
+PASS  ★ list 不回显任何日志内容
+
+=== 2. scan（只给行号与计数，绝不回显被搜索的字面量） ===
+PASS  scan → kind:success  — success
+PASS  scan 报告总行数与命中行数（单行）  — 会话 scan-000 · 共 6 行 · 命中 2 行：2,5 · 未改动任何文件
+PASS  scan 给出命中行号 2,5  — 会话 scan-000 · 共 6 行 · 命中 2 行：2,5 · 未改动任何文件
+PASS  ★ scan 输出不含被搜索的字面量
+PASS  scan 输出不含命中行的任何正文
+PASS  scan 明确声明未改动文件（单行）  — 会话 scan-000 · 共 6 行 · 命中 2 行：2,5 · 未改动任何文件
+PASS  scan 真的没动任何文件（size+mtime）
+PASS  scan 命中 >8 行时只列 8 个行号并标注总数（单行）  — 会话 scan-man · 共 15 行 · 命中 14 行：2,3,4,5,6,7,8,9…共14 · 未改动任何文件
+PASS  scan 截断时同样不回显字面量
+
+=== 3. plan（dry run，一个字节都不写） ===
+PASS  plan → kind:success 且声明未写盘（单行）  — 试算 OK（未写盘） · plan-000 · 行 删0/空1/改1/换1 · 帧 留1/写2 · 自检通过
+PASS  plan 输出统计与自检结论  — 试算 OK（未写盘） · plan-000 · 行 删0/空1/改1/换1 · 帧 留1/写2 · 自检通过
+PASS  plan 输出不含被处理的正文
+PASS  ★ plan 未改动任何文件（size+mtime 全等）
+PASS  plan 未留下隔离备份 / .redact-tmp
+
+=== 4. apply（就地脱敏、隔离备份、行数与 seq 不变） ===
+PASS  apply → kind:success  — success
+PASS  apply 输出统计（替换 2 / 清空 1 / 路径改写 1 / 未删行，单行）  — 已脱敏 apply-00 · 备份 session.v1.jsonl.zstd.quarantine-2026-09-12T11-45-06-088Z（仍含原文，确认无误后自行删除） · 行 删0/空1/改1/换2 · 帧 留1/写3 · 缓存清理 2 · 另有 7 处需自行处理（见文档 安全模型）
+PASS  apply 输出帧统计（保留 1 / 重写 3）与备份文件名  — 已脱敏 apply-00 · 备份 session.v1.jsonl.zstd.quarantine-2026-09-12T11-45-06-088Z（仍含原文，确认无误后自行删除） · 行 删0/空1/改1/换2 · 帧 留1/写3 · 缓存清理 2 · 另有 7 处需自行处理（见文档 安全模型）
+PASS  ★ apply 输出不回显被脱敏的正文
+PASS  apply 声明已清理派生缓存 2 个（单行）  — 已脱敏 apply-00 · 备份 session.v1.jsonl.zstd.quarantine-2026-09-12T11-45-06-088Z（仍含原文，确认无误后自行删除） · 行 删0/空1/改1/换2 · 帧 留1/写3 · 缓存清理 2 · 另有 7 处需自行处理（见文档 安全模型）
+PASS  ★ 日志文件确实变了  — 436B → 423B
+PASS  生成了 1 个 .quarantine-<时间戳> 兄弟文件  — session.v1.jsonl.zstd.quarantine-2026-09-12T11-45-06-088Z
+PASS  隔离备份名带 ISO 时间戳  — session.v1.jsonl.zstd.quarantine-2026-09-12T11-45-06-088Z
+PASS  ★ 隔离备份内容 = 原始字节
+PASS  apply 未留下 .redact-tmp
+PASS  apply 清掉了本会话派生缓存
+PASS  ★ 行数不变（7 行）  — 7 → 7
+PASS  ★ 每行 seq 不变且仍等于行号-1
+PASS  ★ checkSeqDensity 仍然通过
+PASS  结构自检：4 帧 / 解析失败 0 / 头部合法
+PASS  ★ 被搜索的字面量已从日志中消失
+PASS  全局替换在第 2 行与第 5 行都生效  — one [已移除]
+PASS  setFields 改写第 4 行
+PASS  blankLines 清空第 7 行全部字符串
+PASS  清空未破坏 type/seq/time
+PASS  未命中的第 3 行与第 6 行原样保留
+PASS  未触碰的第 0 帧（头部）原字节保留
+
+=== 5. 在用（当前）会话：默认拒绝，--allow-live 放行 ===
+PASS  apply 当前会话 → kind:error  — error
+PASS  拒绝信息说明原因并给出可执行的出路（单行，出路在前）  — 拒绝改写在用会话 live-cur（写句柄仍持有该日志） · 加 --allow-live 可在本会话内执行（之后需重开会话） · 或切到其它会话后执行 /redact apply <计划.json> --session live-cur
+PASS  ★ 拒绝后日志一个字节都没动
+PASS  拒绝后没有留下隔离备份 / .redact-tmp
+PASS  未写 --session（默认落到当前会话）同样拒绝  — 拒绝改写在用会话 live-cur（写句柄仍持有该日志） · 加 --allow-live 可在本会话内执行（之后需重开会话） · 或切到其它会话后执行 /redact apply <计划.json> --session live-cur
+PASS  --allow-live → kind:success  — 已脱敏 live-cur · 备份 session.v1.jsonl.zstd.quarantine-2026-09-12T11-45-06-112Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写1 · 缓存清理 0 · 重开会话后内存历史才更新 · 另有 7 处…
+PASS  放行后日志确实被改写
+PASS  放行后留下含原始字节的隔离备份
+PASS  放行后行数仍为 61 且 seq 密集
+PASS  放行后字面量已消失
+
+=== 6. 错误路径（返回 kind:error、消息有用、什么都不改） ===
+PASS  缺计划文件位置参数 → kind:error  — error
+PASS  缺计划文件位置参数 → 消息含「缺少计划文件路径」  — 缺少计划文件路径 · 用法：/redact list|nodes|verify|purge|undo（可加 --session <id>） · scan|plan|apply <计划.json> · hide <序号|计划.json|--lines 行号> · rollback <轮数> · 写操作需 --commit；匹配文本…
+PASS  计划文件不存在 → kind:error  — error
+PASS  计划文件不存在 → 消息含「无法解析」  — 计划文件无法解析: %USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em\plans\never-written.json（ENOENT: no such file or directory, open '%USERPROFILE%\AppData\Local\Temp\dsh-redact-…
+PASS  计划 JSON 不可解析 → kind:error  — error
+PASS  计划 JSON 不可解析 → 消息含「无法解析」  — 计划文件无法解析: %USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em\plans\bad-plan.json（Unexpected end of JSON input）
+PASS  未知子命令 → kind:error  — error
+PASS  未知子命令 → 消息含「未知子命令」  — 未知子命令 frobnicate · 用法：/redact list|nodes|verify|purge|undo（可加 --session <id>） · scan|plan|apply <计划.json> · hide <序号|计划.json|--lines 行号> · rollback <轮数> · 写操作需 --commit；匹…
+PASS  未知会话 id → kind:error  — error
+PASS  未知会话 id → 消息含「找不到会话」  — 找不到会话 no-such-session-xyz 的日志
+PASS  既无 --session 也无当前会话 → kind:error  — error
+PASS  既无 --session 也无当前会话 → 消息含「无法确定目标会话」  — 无法确定目标会话，请加 --session <id>
+PASS  不存在的 root（scan） → kind:error  — error
+PASS  不存在的 root（scan） → 消息含「会话根目录不存在」  — 会话根目录不存在: %USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em\no-such-root
+PASS  不存在的 root（apply） → kind:error  — error
+PASS  不存在的 root（apply） → 消息含「会话根目录不存在」  — 会话根目录不存在: %USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em\no-such-root
+PASS  不存在的 root（verify） → kind:error  — error
+PASS  不存在的 root（verify） → 消息含「会话根目录不存在」  — 会话根目录不存在: %USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em\no-such-root
+PASS  ★ 以上错误路径都没有改动任何文件
+
+=== 7. verify（好日志通过 / 损坏日志报错） ===
+PASS  verify 好日志 → kind:success  — success
+PASS  verify 输出结构统计（帧 3 / 行 3 / 头部合法，单行）  — ✓ verify-o · 帧 3 · 行 3 · 头部合法 · seq 密集 · 引用合法 · 读取端可打开
+PASS  verify 输出 seq 密集性与结论（单行）  — ✓ verify-o · 帧 3 · 行 3 · 头部合法 · seq 密集 · 引用合法 · 读取端可打开
+PASS  verify 不回显日志内容
+PASS  （前置）损坏后帧边界仍可扫描（4 帧）
+PASS  （前置）损坏帧确实解不开  — 帧 1 解码失败
+PASS  ★ verify 损坏日志 → kind:error  — error
+PASS  verify 报出帧解码失败
+PASS  verify 结论为「有问题」（✗ + 问题：+ 解码失败，单行）  — ✗ verify-b · 帧 4 · 行 1 · 问题：第 1 帧解码失败（压缩块或校验和不合法）
+
+=== 8. purge（删派生缓存，不误伤别的会话） ===
+PASS  purge → kind:success  — success
+PASS  purge 报告删除 2 个文件（单行）  — 已清理缓存 2 个 · purge-00 · 仍有 7 处本工具不动：%USERPROFILE%\.dsh-tui\history.jsonl 等
+PASS  ★ purge 删掉 <id>.json
+PASS  ★ purge 删掉 <id>.json.bak.*
+PASS  无关会话的缓存幸存
+PASS  前缀相似的其它文件不被误删
+PASS  purge 无目标会话 → kind:error
+
+=== 8b. hide（会话内 surface 替换；若本版没有该子命令则跳过） ===
+PASS  hide 默认只试算 → kind:success  — success
+PASS  hide 试算只圈 tool/result 表面节点，跳过 user/message  — 试算：将隐藏 2 个节点（seq 1,3）· 加 --commit 执行
+PASS  ★ hide 试算不回显被隐藏的正文
+PASS  hide 试算不写入会话（append 未被调用）
+PASS  hide 试算不碰磁盘
+PASS  hide --commit → kind:success  — 已隐藏 2 个节点 · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）
+PASS  hide --commit 追加 2 个 tool/result 替换节点  — 实际 2
+PASS  ★ 替换节点带 surfaceOp{replace} 与 sourceEventSeqs  — [{"surfaceOp":{"op":"replace","startSeq":1,"endSeq":1},"sourceEventSeqs":[1]},{"surfaceOp":{"op":"replace","startSeq":3,"endSeq":3},"sourceEventSeqs":[3]}]
+PASS  ★ 替换后的正文不再含原字面量，且已换成占位符
+PASS  hide 不删磁盘字节（只在内存 surface 上遮蔽）
+PASS  hide --session 指向别的会话 → kind:error
+PASS  hide 没有会话对象 → kind:error
+PASS  hide 计划里没有 substitutions[].find → kind:error
+PASS  hide 计划文件不存在 → kind:error
+
+=== 9a. blankLines 命中嵌套对象 / 数组 ===
+PASS  9a 行数不变  — 实际 2
+PASS  9a type / seq / time 原样
+PASS  9a 顶层字符串被替换
+PASS  9a 深层嵌套对象字符串被替换
+PASS  9a 数组内字符串被替换
+PASS  9a 数组内对象的字符串被替换
+PASS  9a 字符串数组被替换
+PASS  9a data.text 被替换
+PASS  9a 受保护键 role 原样（顶层与嵌套）
+PASS  9a 受保护键 id / toolCallId / callId 原样
+PASS  9a 数字数组原样
+PASS  9a 布尔 / null 数组原样
+PASS  9a 数组内数字原样
+PASS  9a 数字 / 浮点 / 布尔 / null 原样
+PASS  9a 空对象 / 空数组原样
+PASS  ★ 9a 输出中不再有任何原文
+PASS  9a stats：blanked=1 / 行数不变 / seq 密集
+
+=== 9b. 全局替换（无 lines 字段）跨多帧生效 ===
+PASS  9b 全局替换命中 4 处  — 实际 4
+PASS  ★ 9b 替换不止落在一帧里  — 含占位符的帧：1,2,3
+PASS  9b 三个事件帧全部被改写
+PASS  ★ 9b 任何一帧都不再含原字面量
+PASS  9b 头部帧原字节保留
+PASS  9b 帧统计：保留 1 / 重写 3  — 保留 1 / 重写 3
+PASS  9b 行数与 seq 不变  — 行数 5
+PASS  9b 同帧内未命中行原样保留
+
+=== 9c. 后缀 dropLines：无需 renumber ===
+PASS  9c 后缀删除放行  — dropped=1
+PASS  9c 提示说明是安全后缀  — 将删除 1 行（后缀，安全）
+PASS  9c 行数 5 → 4
+PASS  ★ 9c 被删内容消失
+PASS  ★ 9c seq 仍密集
+PASS  9c 未触碰帧原字节保留（帧 0..2）
+
+=== 9d. 中间 dropLines：无 renumber 必须拒绝 ===
+PASS  ★ 9d 中间行删除被拒绝（抛 RedactError，不杀宿主进程）  — exited=false threw=拒绝执行：删除中间行会让每行 seq 不再等于自己的行号，读取端会判定整份日志损坏（seq gap）。
+      要抹掉内容请改用 blankLines（原地清空该行全部文本，结构不变）或 substitutions/setFields；
+      确实要删除请加 "renumber": true，本工具会重编号并重映射所有向后引用（遇到悬空引用仍会拒绝）。
+PASS  9d 拒绝理由点明 seq gap 并给出 3 条出路
+PASS  9d 拒绝信息不泄漏日志正文
+PASS  9d 拒绝后文件未变
+
+=== 9e. renumber：向后引用重映射 / 悬空引用拒绝 ===
+PASS  9e 中间删除 + renumber 放行  — dropped=1 行数=6
+PASS  9e 提示说明已重编号  — 已启用 renumber：所有行的 seq 与向后引用都已按删除量重映射 | 将删除 1 行（中间，已重编号）
+PASS  ★ 9e 本行 seq 被重编号 4 → 3  — 3
+PASS  ★ 9e surfaceOp {0,3} → {0,2}  — {"op":"replace","startSeq":0,"endSeq":2}
+PASS  ★ 9e sourceEventSeqs [0,2,3] → [0,1,2]  — [0,1,2]
+PASS  9e data.shadowedSeqs [3,4] → [2,3]  — [2,3]
+PASS  9e data.shadowedRange {2,4} → {1,3}  — {"start":1,"end":3}
+PASS  9e 重编号行数 = 4  — 4
+PASS  ★ 9e 重编号后 seq 仍密集
+PASS  9e 被删行消失、其余行原样
+PASS  9e 第 0 帧（头部）原字节保留
+PASS  ★ 9e 引用被删行 → 拒绝执行（抛 RedactError）  — exited=false threw=第 6 行 的 sourceEventSeqs[1] 引用了被删除的第 3 行（seq 1）：请改用 blankLines 原地清空该行，而不是删除它
+PASS  9e 悬空引用报错指明行号与 seq
+PASS  9e 悬空引用报错给出 blankLines 替代方案
+PASS  9e 悬空引用报错不泄漏正文
+
+=== 10. BUG 观察（只记录，不计入断言；套件不因此失败） ===
+  [观察·不计入断言] 探针A：非法计划返回 {"kind":"error","text":"未执行：不能删除或清空第 1 行（头部），否则整份日志不可读"}，未调用 process.exit —— 引擎 die 已是 throw（BUG-1 已修）。
+  [观察·不计入断言] 探针B：帧魔数损坏时 verify 返回 {"kind":"error","text":"日志无法解析：帧魔数非法 @ 字节 101（不是本格式或已损坏）"}（BUG-2 已修：scanFrames 的 throw 被接住）。
+  [观察·不计入断言] 探针C：root 不存在时 list 返回 kind=success，文本「没有找到任何会话日志（root=%USERPROFILE%\AppData\Local\Temp\dsh-redact-handler-selftest-Zd82Em\no-such-root）」
+  [观察·不计入断言] 探针D：无 lines → 命中 2 行；lines='2' → 命中 1 行「会话 scan-000 · 共 6 行 · 命中 1 行：2 · 已按 substitutions[].lines 限定 · 未改动任何文件」
+  [观察·不计入断言]         结论：scan 遵守 substitutions[].lines（区间外的第 5 行已不再计入）
+  [观察·不计入断言] 探针E：scan 在结构性损坏的日志上返回 {"kind":"error","text":"日志无法解析：帧魔数非法 @ 字节 100（不是本格式或已损坏）"}（已能友好报错）
+  [观察·不计入断言] 探针F：apply 在用会话拒绝：显示格 168 · 含换行 false · 含 --allow-live true
+  [观察·不计入断言]         返回文本尾部（截断点）：…"edact apply <计划.json> --session live-cur"
+  [观察·不计入断言]         影响：这条「怎么安全地做」的提示被砍在半路，用户看不到 --allow-live 这条出路；
+  [观察·不计入断言]               同类多行输出还有 未知子命令 / 缺少计划文件路径 / rollback 拒绝 / 残帧拒绝。
+
+159/159 通过
+被测 index.js：45665B sha256:b8eeb35ea301

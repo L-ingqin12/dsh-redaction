@@ -1,0 +1,2 @@
+{"scenario":"realEcho","outcome":"BOOT_OK","ms":255,"commandsRegistered":["redact"],"entries":[{"id":"include","name":"cordis:include","state":2,"disabled":false},{"id":"dsh-redact","name":"dsh-plugin-redact","state":2,"disabled":false},{"id":"dsh-content-policy","name":"dsh-plugin-content-policy","state":2,"disabled":false},{"id":"x-echo","name":"./fix-echo.mjs","state":2,"disabled":false}]}
+echo file: %USERPROFILE%\AppData\Local\Temp\dsh-bootverify\echo.json

@@ -1,0 +1,17 @@
+PASS  A. apply 成功  — 已脱敏 rt-undo- · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-10-928Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 另有 8 处需自行处理（见文档 安全模型）
+PASS  A. 生成了隔离备份  — session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-10-928Z
+PASS  A. 脱敏后日志结构完好
+      → 备份被截断: 634 → 317 字节
+FAIL  A. undo 报告成功（没有校验备份）  — 拒绝恢复：备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-10-928Z 尾部有未完成残帧（字节 287），可能少了一批事件 · 当前日志未改动（643B） · 可改用更早的 .quarantine-* 或 .before-undo-* 备份手…
+FAIL  A. 当前日志被坏备份覆盖  — 643 → 643
+      → 截断备份被当成崩溃尾读取：ok=true events=7 静默丢失事件
+      → 撤销前状态另存为 （需要人工改名才能救回）
+FAIL  A2. undo 报告成功  — 拒绝恢复：备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-10-987Z 不合格（第 2 帧解码失败（压缩块或校验和不合法）） · 当前日志未改动（646B） · 可改用更早的 .quarantine-* 或 .before-undo-* 备份…
+FAIL  A2. 覆盖后 DSH 无法打开该会话（硬损坏）  — 仍可打开
+PASS  B. 备份存在
+FAIL  B. 日志缺失时 undo 仍能恢复（实现承诺）  — 找不到会话 rt-undo-missing 的日志
+      → 40 次 apply 全部成功=40，隔离备份文件数=40
+PASS  C. 40 次脱敏产出 40 个互不覆盖的备份  — 实际 40 个 → 有 0 份原始状态被覆盖
+      → copyFileSync 保留源 mtime: true（源 2026-09-12T11:44:11.375Z，副本 2026-09-12T11:44:11.375Z）
+
+P2: 5 条断言失败（=发现真实缺陷）

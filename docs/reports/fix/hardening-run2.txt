@@ -1,0 +1,106 @@
+
+=== 0. 元发现：旧夹具形状根本不是合法日志 ===
+PASS  ★ 旧夹具形状（role:"tool" / user/message 包一层 message）被真实读取端拒绝  — SessionPersistenceCorruptionError: stored session "meta-old-shape" failed validation: Error: session event at seq 2 lacks an identified message
+PASS  ★ 真实形状的同类夹具可以打开  — 7 events
+PASS  ★ 真实形状：tool/result 的 message 是 role:"user" + source.kind:"tool"  — {"kind":"tool","callId":"c1"}
+
+=== F1. sourceEventSeqs 的游程（[start,end]）形式重映射 ===
+PASS  F1 夹具：盘上 sourceEventSeqs 确实是游程 [start,end]  — [[2,4]]
+PASS  F1 夹具：改写前真实后端可打开
+PASS  ★ F1 游程被展开→逐项映射→按读取端同一压缩器重新压缩  — seq=4 surfaceOp={"op":"replace","startSeq":1,"endSeq":3} sourceEventSeqs=[[1,3]]
+PASS  ★ F1 引擎输出能被真实后端打开（修复前：sourceEventSeqs range exceeds its event seq）  — 7 events
+PASS  F1 引擎自己的总闸也认可（verifyLog）
+PASS  F1 整数形态仍是整数形态（只按 map 重编号）  — [1,2]
+PASS  F1 整数形态输出仍可打开
+PASS  ★ F1 区间中间的 seq 被删时拒绝执行（旧实现的悬空检查对区间元素永不触发）  — 第 7 行 的 sourceEventSeqs[0] 展开出的 seq 3 引用了被删除的第 5 行（seq 3）：请改用 blankLines 原地清空该行，而不是删除它
+PASS  F1 拒绝理由点明区间里被删的 seq  — 第 7 行 的 sourceEventSeqs[0] 展开出的 seq 3 引用了被删除的第 5 行（seq 3）：请改用 blankLines 原地清空该行，而不是删除它
+PASS  F1 非整数非 [start,end] 的形态被拒绝  — 第 4 行 的 sourceEventSeqs[0] 既不是整数也不是 [start, end] 区间（长度 1），已拒绝执行
+
+=== F2. session/title.data.messageSeqs 与 *Seq 字段审计 ===
+PASS  F2 夹具：改写前可打开
+PASS  ★ F2 messageSeqs 被重映射（2 → 1）  — [1]
+PASS  ★ F2 引用落在 user/message（不再悬空/错指）  — user/message
+PASS  ★ F2 真实 dsh-session-title 不变式接受改写后的日志  — 通过
+PASS  ★ F2 输出仍能被真实后端打开
+PASS  ★ F2 清单外的 *Seq 字段被失败关闭（拒绝而不是写出悬空引用）  — 第 4 行 上的字段 data.somePluginSeq 看起来是持久化的 seq 引用，但它不在本工具已知的引用清单里。
+PASS  F2 拒绝理由报出字段路径  — 第 4 行 上的字段 data.somePluginSeq 看起来是持久化的 seq 引用，但它不在本工具已知的引用清单里。
+PASS  F2 不重编号时不触发审计（引用不会移动）
+PASS  F2 data.sourceEventSeq（command/done）也被重映射  — seq=3 sourceEventSeq=2
+
+=== F1+F2 总闸：读取端会拒绝的输出必须在写盘前被拦下 ===
+PASS  总闸：合法日志 → ok
+PASS  ★ 总闸：sourceEventSeqs 游程超过本行 seq → 拒绝  — 第 4 行 的 sourceEventSeqs 会被读取端拒绝：sourceEventSeqs 区间 [1, 2] 超出本行的事件数 2
+PASS  ★ 总闸：引用重复 / 非严格递增 → 拒绝  — 第 4 行 的 sourceEventSeqs 会被读取端拒绝：sourceEventSeqs 区间 [1, 2] 超出本行的事件数 2
+PASS  ★ 总闸：seq 不密集 → 拒绝  — 第 3 行的 seq 是 5，应为 1（读取端会判定为损坏）
+PASS  ★ 总闸：头部非法 → 拒绝  — 头部行不合格：createdAt 不是安全整数
+PASS  ★ 总闸：surfaceOp 端点必须 < 本行 seq → 拒绝  — 第 4 行 的 surfaceOp.startSeq=2 必须指向更早的事件（< 2）
+PASS  ★ 总闸：session/title 引用非人类 user/message → 拒绝（真实不变式）  — 第 5 行 的 session/title 引用的 message seq 2 必须指向更早的 source.kind="user" 的 user/message
+
+=== F3. undo 先校验备份，再原子安装 ===
+PASS  F3 前置：apply 成功  — 已脱敏 f3-undo · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-529Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 另有 8 处需自行处理（见文档 安全模型）
+PASS  ★ F3 备份被截断 → 拒绝恢复  — 拒绝恢复：备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-529Z 尾部有未完成残帧（字节 284），可能少了一批事件 · 当前日志未改动（639B） · 可改用更早的 .quarantine-* 或 .before-undo-* 备份手…
+PASS  ★ F3 拒绝后当前日志一个字节都没动
+PASS  ★ F3 拒绝后真实后端仍能打开当前日志
+PASS  F3 拒绝信息指出「当前日志未改动」  — 拒绝恢复：备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-529Z 尾部有未完成残帧（字节 284），可能少了一批事件 · 当前日志未改动（639B） · 可改用更早的 .quarantine-* 或 .before-undo-* 备份手…
+PASS  F3 拒绝信息给出可用的替代备份路径  — 拒绝恢复：备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-529Z 尾部有未完成残帧（字节 284），可能少了一批事件 · 当前日志未改动（639B） · 可改用更早的 .quarantine-* 或 .before-undo-* 备份手…
+PASS  F3 拒绝时不留下 .redact-tmp
+PASS  ★ F3 备份中间损坏 → 拒绝恢复  — 拒绝恢复：备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-561Z 不合格（第 2 帧解码失败（压缩块或校验和不合法）） · 当前日志未改动（634B） · 可改用更早的 .quarantine-* 或 .before-undo-* 备份…
+PASS  ★ F3 拒绝后日志未变且可打开
+PASS  F3 健康备份 → 恢复成功  — f3-ok · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-586Z（628B）· 当前 635B · 已恢复（已校验） · 撤销前状态另存 session.v3.jsonl.zstd.before-undo-2026-09-12T11-42-37-594Z · 缓存清理 0
+PASS  ★ F3 恢复后内容与改写前逐字节一致
+PASS  F3 恢复后真实后端可打开
+PASS  F3 恢复后没有残留 .redact-tmp
+
+=== F4. live 原地改写：顺序、修订号复查、短写与并发追加 ===
+PASS  ★ F4(a) 打开 fd 后被并发追加 → 中止写入并报错  — 写入失败（日志未被改动，已删除刚生成的隔离备份）：日志在本次读取之后被追加过（可能有并发写入）。已放弃写入，以免覆盖新事件。
+PASS  ★ F4(a) 并发追加的事件没有被吃掉  — 635 → 706（+71）
+PASS  ★ F4(a) 中止时不留含原文的隔离备份（目标未改动）
+PASS  F4(a) 中止文案说明日志未被改动  — 写入失败（日志未被改动，已删除刚生成的隔离备份）：日志在本次读取之后被追加过（可能有并发写入）。已放弃写入，以免覆盖新事件。
+FAIL  ★ F4(b) 并发追加的帧没有被 ftruncate 吃掉  — 641 → 641（+71）
+FAIL  ★ F4(b) 检测到写入期间的并发追加并报错  — 已脱敏 f4-race- · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-624Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 重开会话后内存历史才更新 · 另有 8 处…
+FAIL  ★ F4(b) 报错时点名仍含原文的隔离备份（F6）  — 已脱敏 f4-race- · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-624Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 重开会话后内存历史才更新 · 另有 8 处…
+PASS  F4(b) 隔离备份确实在盘上
+PASS  ★ F4(c) 截断后崩溃 → 文件是旧日志的前缀，而不是新旧混合体  — 634 → 634（out=642）
+PASS  ★ F4(c) 该状态能被真实后端打开（=可容忍的短尾，不是硬损坏）  — 7 events
+FAIL  F4(c) 事件数少于原文（只是尾部丢失）  — 7
+FAIL  F4(c) 失败文案点名隔离备份（含原文）  — 写入失败（日志未被改动，已删除刚生成的隔离备份）：模拟进程在截断之后、写入之前死掉
+PASS  F4(d) 正常 live 改写成功  — 已脱敏 f4-norma · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-662Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 重开会话后内存历史才更新 · 另有 8 处…
+PASS  ★ F4(d) 文件长度精确等于 out.length（无短写、无残留尾巴）  — 639 vs 639
+PASS  ★ F4(d) 改写后真实后端可打开且事件数不变
+
+=== F5. 缓存清理绝不把成功变成异常 ===
+PASS  ★ F5 缓存里存在同名目录时 purge 仍返回结果（不抛异常）  — 已清理缓存 1 个 · f5-purge · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  F5 目录本身不被删除
+PASS  F5 普通文件备份仍被清掉
+PASS  ★ F5 写盘成功后的缓存清理失败不会把命令变成失败  — 已脱敏 f5-purge · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-700Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 另有 8 处需自行处理（见文档 安全模型）
+PASS  ★ F5 日志确实已被改写（用户看到的成功是真的）
+PASS  F5 成功文案里带上缓存清理计数  — 已脱敏 f5-purge · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-42-37-700Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写3 · 缓存清理 0 · 另有 8 处需自行处理（见文档 安全模型）
+
+=== F6. 写盘失败时不留「没人知道的原文备份」 ===
+PASS  ★ F6(a) 写失败且目标未改动 → 删除刚生成的隔离备份  — 写入失败（日志未被改动，已删除刚生成的隔离备份）：EISDIR: illegal operation on a directory, open '%USERPROFILE%\AppData\Local\Temp\dsh-redact-hardening-362iaw\sessions\_no-cwd\f6-untouched\session.v… / 备份 0 个
+PASS  F6(a) 文案明确说明已删除备份  — 写入失败（日志未被改动，已删除刚生成的隔离备份）：EISDIR: illegal operation on a directory, open '%USERPROFILE%\AppData\Local\Temp\dsh-redact-hardening-362iaw\sessions\_no-cwd\f6-untouched\session.v…
+PASS  F6(a) 日志未被改动
+PASS  F6(b) 目标被改动时保留并点名备份（由 F4(c) 覆盖）
+
+=== F7. 去掉病态开销（帧索引 / 重复解码 / Math.min 展开） ===
+PASS  F7 前置：夹具 seq 密集
+PASS  ★ F7 2 万行中间删除 + renumber 不抛 RangeError（旧实现 Math.min(...set) 爆栈）
+PASS  ★ F7 该操作在合理时间内完成（< 20s）  — 251ms
+PASS  F7 输出仍能被总闸接受
+PASS  F7 applyPlan 未把输出额外整解两遍（自检只有一遍）  — 单遍 inspectBuffer=106ms（仅供记录）
+
+=== F9/F10. hide：半途失败要报告已落地的节点；形态不支持不得谎报成功 ===
+PASS  ★ F9 多目标半途失败 → kind:error  — 第 2 个节点替换失败：模拟持久化失败（磁盘满 / 句柄失效） · 已有 1 个节点被永久遮蔽（seq 1），该变更已生效且不可撤销，建议重开会话
+PASS  ★ F9 报出已落地的节点数与 seq（旧实现把 landed 丢掉了）  — 第 2 个节点替换失败：模拟持久化失败（磁盘满 / 句柄失效） · 已有 1 个节点被永久遮蔽（seq 1），该变更已生效且不可撤销，建议重开会话
+PASS  ★ F9 说明该变更已生效且不可撤销  — 第 2 个节点替换失败：模拟持久化失败（磁盘满 / 句柄失效） · 已有 1 个节点被永久遮蔽（seq 1），该变更已生效且不可撤销，建议重开会话
+PASS  F9 半途状态属实：第 1 个节点的替换确实已提交  — [101,102]
+PASS  ★ F10 消息形态不受支持 → kind:error（不再谎报「已隐藏 1 个节点」）  — 第 1 个节点（seq 1）的消息形态不受支持（content 里没有可替换的文本块），未做改动
+PASS  ★ F10 报出「未做改动」  — 第 1 个节点（seq 1）的消息形态不受支持（content 里没有可替换的文本块），未做改动
+
+失败用例：
+  - ★ F4(b) 并发追加的帧没有被 ftruncate 吃掉
+  - ★ F4(b) 检测到写入期间的并发追加并报错
+  - ★ F4(b) 报错时点名仍含原文的隔离备份（F6）
+  - F4(c) 事件数少于原文（只是尾部丢失）
+  - F4(c) 失败文案点名隔离备份（含原文）
+73/78 通过

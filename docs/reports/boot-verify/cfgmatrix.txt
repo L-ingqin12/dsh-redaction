@@ -1,0 +1,20 @@
+omitted (no config key)            OK  entries=[dsh-redact:2] commands=["redact"]
+{}                                 OK  entries=[dsh-redact:2] commands=["redact"]
+null (YAML `config:` left empty)   OK  entries=[dsh-redact:2] commands=["redact"]
+{bogus:1} unknown key              OK  entries=[dsh-redact:2] commands=["redact"]
+argsCells: omitted                 OK  entries=[dsh-redact:2] commands=["redact"]
+argsCells: 0                       OK  entries=[dsh-redact:2] commands=["redact"]
+argsCells: 120                     OK  entries=[dsh-redact:2] commands=["redact"]
+argsCells: -1                      BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+argsCells: 1.5                     BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+argsCells: "5000"                  BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+argsCells: null                    BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+argsCells: NaN-ish "abc"           BOOT_ABORTED  dsh-redact: invalid config: $.argsCells must be a non-negative integer
+dialogTimeoutMs: omitted           OK  entries=[dsh-redact:2] commands=["redact"]
+dialogTimeoutMs: 0 (disabled)      OK  entries=[dsh-redact:2] commands=["redact"]
+dialogTimeoutMs: 15000             OK  entries=[dsh-redact:2] commands=["redact"]
+dialogTimeoutMs: -1                BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+dialogTimeoutMs: 1.5               BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+dialogTimeoutMs: "5000"            BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+dialogTimeoutMs: null              BOOT_ABORTED  dsh-redact: invalid config: $.dialogTimeoutMs must be a non-negative integer
+argsCells:0 + dialogTimeoutMs:0    OK  entries=[dsh-redact:2] commands=["redact"]

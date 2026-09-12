@@ -1,0 +1,90 @@
+### branch=b -> FALLBACK (built-in Standard Schema)
+
+-- undefined
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- LIVE profile config {enabled:true,rules:[]}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {maxScannedBytes: Infinity}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":null,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {maxScannedBytes: 0}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":0,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {maxScannedBytes: 1.5}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":1.5,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {onBudgetExceeded:"nope"}
+   ISSUES: onBudgetExceeded 只能是 partial | error @onBudgetExceeded
+
+-- {enabled:"yes"}
+   ISSUES: enabled 必须是布尔值 @enabled
+
+-- {rules:[{id:"r",match:"x"}]}
+   VALUE: {"enabled":true,"rules":[{"id":"r","match":"x"}],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {rules:[{match:"x"}]}
+   ISSUES: 规则缺少非空字符串 id @rules.0
+
+-- {rules:"notarray"}
+   ISSUES: rules 必须是数组 @rules
+
+-- {strip:[{id:"s",path:"content"}]}
+   VALUE: {"enabled":true,"rules":[],"strip":[{"id":"s","path":"content"}],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {strip:[{id:"s",maxChars:10}]}
+   ISSUES: strip 规则缺少非空字符串 path @strip.0
+
+-- {stripDefaults:true,strip:[]}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":true,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {onStripRefused:"skip"}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"skip","notify":true}
+
+-- {onStripRefused:"boom"}
+   ISSUES: onStripRefused 只能是 error | skip @onStripRefused
+
+-- {bogus:1}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- null
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- []
+   ISSUES: 配置必须是对象
+
+-- "str"
+   ISSUES: 配置必须是对象
+
+-- {strip:"notarray"}
+   ISSUES: strip 必须是数组 @strip
+
+-- {strip:{}}
+   ISSUES: strip 必须是数组 @strip
+
+-- {stripDefaults:"yes"}
+   ISSUES: stripDefaults 必须是布尔值 @stripDefaults
+
+-- {stripDefaults:undefined}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {onStripRefused:undefined}
+   VALUE: {"enabled":true,"rules":[],"strip":[],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {strip:[{id:"s",path:"sources.*.snippet",maxChars:40}]}
+   VALUE: {"enabled":true,"rules":[],"strip":[{"id":"s","path":"sources.*.snippet","maxChars":40}],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {strip:[{id:"s",path:"content",maxChars:1.5}]}
+   VALUE: {"enabled":true,"rules":[],"strip":[{"id":"s","path":"content","maxChars":1.5}],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {strip:[{id:"s",path:"content",maxChars:0}]}
+   VALUE: {"enabled":true,"rules":[],"strip":[{"id":"s","path":"content","maxChars":0}],"stripDefaults":false,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+-- {stripDefaults:true,strip:[{id:"s",path:"content"}]}
+   VALUE: {"enabled":true,"rules":[],"strip":[{"id":"s","path":"content"}],"stripDefaults":true,"maxScannedBytes":4194304,"onBudgetExceeded":"partial","onUnsafeValue":"keep","onStripRefused":"error","notify":true}
+
+### module-level exports: Config,DEFAULT_REPLACEMENT,POLICY_CODE,STRIP_MARKER,WEB_SEARCH_STRIP_DEFAULTS,apply,inject,name

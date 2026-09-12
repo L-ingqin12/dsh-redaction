@@ -1,0 +1,5 @@
+# 统一按 LF 入库：包会发布到 npm，跨平台消费者不应拿到 CRLF
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.tgz binary

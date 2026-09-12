@@ -1,0 +1,61 @@
+{
+  "name": "dsh-plugin-content-policy",
+  "version": "0.2.0",
+  "description": "预防式内容策略：在 DSH 工具结果被规范化/落盘之前改写它 —— 正则规则改写命中文本，结构最小化（strip）按字段路径整段丢弃/截断无法预判的载荷。dsh-plugin-redact 的事前对应物。",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./scrub": "./lib/scrub.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "lib/scrub.mjs",
+    "test/selftest.mjs",
+    "test/harness.mjs",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/selftest.mjs && node test/harness.mjs",
+    "test:pure": "node test/selftest.mjs",
+    "test:config": "node test/config-schemastery.mjs",
+    "test:registry": "node test/registry-e2e.mjs"
+  },
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "content-policy",
+    "redaction",
+    "prevention",
+    "data-minimisation",
+    "tool-result"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/schemastery": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
+  }
+}

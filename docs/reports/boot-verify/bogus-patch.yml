@@ -1,0 +1,3 @@
+- insert:
+    - id: bogus-row
+      name: dsh-plugin-totally-nonexistent-xyz

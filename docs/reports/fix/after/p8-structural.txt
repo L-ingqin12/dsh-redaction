@@ -1,0 +1,30 @@
+== A. blankLines 清空 user/message 行（3 = 第 3 个事件行） ==
+   blankLines:3: 引擎报成功；夹具改写前可打开=true
+      → 改写后 DSH 打开: ok=true 7 events
+PASS  A. blankLines 后仍可打开
+      → user/message 被清空后的 source/role: {"role":"user","source":{"kind":"[已移除]"},"id":"u1"}
+
+== B. blankLines 清空 tool/call 行（含 name / arguments） ==
+   blankLines:4: 引擎报成功；夹具改写前可打开=true
+      → 改写后 DSH 打开: ok=true 7 events
+      → tool/call 变成: {"turn":1,"step":1,"callId":"c1","name":"[已移除]","arguments":"[已移除]"}
+PASS  B. blankLines 后仍可打开
+
+== C. substitutions 命中结构字符串（把 "pwsh" 换成 [X]） ==
+   substitutions pwsh: 引擎报成功；夹具改写前可打开=true
+      → 改写后 DSH 打开: ok=true 7 events
+      → tool/call.name="[X]" arguments="{\"command\":\"echo SECRET\"}"
+PASS  C. 替换后仍可打开
+
+== D. substitutions 命中 source.kind（find "user"） ==
+   substitutions user: 引擎报成功；夹具改写前可打开=true
+      → 改写后 DSH 打开: ok=true 7 events
+      → user/message.source={"kind":"[X]"} role="user"
+PASS  D. 替换后仍可打开
+
+== E. substitutions 命中 model / provider 名 ==
+      → 夹具前=true 改写后=true 
+      → assistant/message.source={"kind":"model","provider":"[X]","model":"[X]-chat"}
+PASS  E. 替换 provider/model 后仍可打开
+
+P8: blankLines/substitutions 未破坏可读性

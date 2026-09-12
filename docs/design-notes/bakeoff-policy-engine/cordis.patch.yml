@@ -1,0 +1,41 @@
+# @yourorg/dsh-redaction — profile bundle patch.
+#
+# One insert over the profile root. This layer is applied AFTER every bundle
+# listed before it (in practice @deepseek-ai/dsh-base) and BEFORE the profile's
+# own cordis.patch.yml, the home-level $DSH_HOME/cordis.patch.yml, and any
+# --patch overlay. Those later layers address this row by id `redaction` and
+# win over it, so a user can retune or disable the policy without editing this
+# file — which is also why the row is an auditable control, not a wall.
+#
+# A patch REPLACES a targeted row's whole `config` rather than merging into it.
+# Keep the defaults below complete enough that an empty `config:` still mounts.
+
+- insert:
+    - id: redaction
+      name: '@yourorg/dsh-redaction'
+      config:
+        # enforcement posture
+        mode: enforce
+        onError: fail-closed
+
+        # which content surfaces to scan
+        surfaces:
+          userInput: true
+          toolResults: true
+          ptcLog: true
+          toolArgs: true
+
+        # audit ledger (needs @deepseek-ai/dsh-storage + dsh-storage-domain
+        # mounted; the plugin degrades to stderr warnings without them)
+        audit:
+          enabled: true
+          domain: dsh_redaction_ledger
+          hashChain: true
+          recordDigestOnly: true
+          recordSpans: true
+          retentionDays: 90
+
+        # ship with ZERO rules: the engine mounts, proves it is alive in the
+        # ledger, and redacts nothing until the operator names a detector.
+        # Omitted `rules` is a true no-op, matching @deepseek-ai/dsh-spill-policy.
+        rules: []

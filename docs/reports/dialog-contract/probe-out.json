@@ -1,0 +1,452 @@
+### version => {"DIALOG_DEFAULT_TIMEOUT_MS":30000,"INPUT_CELLS":500,"modExports":["DIALOG_DEFAULT_TIMEOUT_MS","INPUT_CELLS","TuiDialogRuntime","TuiDialogStore","default","getHostDialogStore"]}
+### p0.rootContextGet => {"type":"object","select":"function"}
+### p0.propAccessWithoutInject => ["THREW","cannot get property \"tuiDialogs\" without inject"]
+### p1.looseRowGetAfterMount => {"type":"object","methods":["select","confirm","input"]}
+### p1.hostStoreUnwrapped => true
+### p0b.looseRowMountedBeforeServiceRow => {"sawDialog":false,"warns":["dsh-tui: tuiDialogs.select received malformed data; cancelled"]}
+### p0c.callFromRootContext => {"timerDelays":[],"warns":["dsh-tui: tuiDialogs.select received malformed data; cancelled"]}
+### p0d.guards => [{"tag":"row-mounted-before-service-row","requirePluginCaller":"THREW: dsh-tui: probe requires a live Cordis activation context","bindCallerEffect":false},{"tag":"row-mounted-after-service-row","requirePluginCaller":"OK","bindCallerEffect":true}]
+### p1a.snapshot => {"kind":"select","title":"选择要隐藏的 tool/result 节点（共 3 个，最新在前）","options":[{"id":"1","label":"[1] 行 10 · Bash · 2.0KB"},{"id":"2","label":"[2] 行 8 · Grep · 1.0KB"}],"key":"dlg-1"}
+### p1a.timerDelaysMs => [120000]
+### p1a.resolved => "2"
+### p1a.warns => []
+### p1b.escCancel => {"timerDelaysMs":[30000],"warns":[]}
+### p1c.timeout250 => {"elapsedMs":261,"timerDelaysMs":[250],"queueEmptyAfterwards":true,"warns":[]}
+### p1d.timeout25h => {"timerDelaysMs":[86400000]}
+### p1e.timeoutMs.zero => [30000]
+### p1e.timeoutMs.negative => [30000]
+### p1e.timeoutMs.string => [30000]
+### p1e.timeoutMs.nan => [30000]
+### p1e.timeoutMs.infinity => [30000]
+### p1f.emptyOptions => {"warns":["dsh-tui: tuiDialogs.select called without a title or options; cancelled"]}
+### p1g.noTitle => {"confirmNoTitle":false,"warns":["dsh-tui: tuiDialogs.select called without a title or options; cancelled","dsh-tui: tuiDialogs.select called without a title or options; cancelled","dsh-tui: tuiDialogs.confirm called without a title; cancelled"]}
+### p1h.optionCap => {"sent":200,"rendered":100,"first":"1","last":"100"}
+### p1i.optionValidation => {"sent":7,"rendered":3,"options":[{"id":"good","label":"a b","descLen":null},{"id":"ver batim","label":"keep id verbatim","descLen":null},{"id":"desc","label":"with description","descLen":400}],"warns":[]}
+### p1j.sanitized => {"titleChars":60,"titleEndsEllipsis":true,"labels":["ABC","a b c d","x y z","p q","行 12 · 中文工具 · 1.0KB"]}
+### p1k.nonScalarTitle => {"confirmArrayTitle":false,"warns":["dsh-tui: tuiDialogs.select called without a title or options; cancelled","dsh-tui: tuiDialogs.confirm called without a title; cancelled"]}
+### p1l.confirmSnapshotWithLabels => {"kind":"confirm","title":"隐藏 [1] 行 100 · Bash · 2.0KB？","message":"隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。","confirmLabel":"隐藏","cancelLabel":"取消","key":"dlg-13"}
+### p1l.confirmTimerMs => [120000]
+### p1l.confirmTrue => {"snapshot":{"kind":"confirm","title":"隐藏 [1] 行 100 · Bash · 2.0KB？","message":"隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。","confirmLabel":"隐藏","cancelLabel":"取消","key":"dlg-13"},"value":true,"warns":[]}
+### p1l.confirmFalse => {"value":false,"snapshot":{"confirmLabel":"","cancelLabel":"","message":"M"}}
+### p1l.confirmNoMessageCancel => {"value":false,"snapshot":{"kind":"confirm","title":"Q","confirmLabel":"","cancelLabel":"","key":"dlg-15"}}
+### p1m.confirmNonStringLabels => {"confirmLabel":"","cancelLabel":"42","value":false}
+### p1n.nonObjectRequest => {"confirmUndefined":false,"warns":["dsh-tui: tuiDialogs.select called without a title or options; cancelled","dsh-tui: tuiDialogs.select called without a title or options; cancelled","dsh-tui: tuiDialogs.select called without a title or options; cancelled","dsh-tui: tuiDialogs.confirm called without a title; cancelled"]}
+### p1o.teardown => {"before":"still-pending"}
+### p1p.fifo => {"first":"A","second":"B","a":"a","b":"b"}
+### p2a.happyPath => {"observed":{"kind":"select","title":"选择要隐藏的 tool/result 节点（共 3 个，最新在前）","optionCount":3,"options":[{"id":"1","label":"[1] 行 7 · Bash · 2.1KB"},{"id":"2","label":"[2] 行 5 · Bash · 2.1KB"},{"id":"3","label":"[3] 行 3 · Bash · 2.1KB"}]},"confirmSnapshot":{"title":"隐藏 [2] 行 5 · Bash · 2.1KB？","message":"隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。","confirmLabel":"隐藏","cancelLabel":"取消"},"timerMs":[120000,120000],"warns":[],"result":{"kind":"success","text":"已隐藏 [2] 行 5 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"},"appended":["tool/result"]}
+### p2b.escOnSelect => {"result":{"kind":"success","text":"已取消"},"warns":[]}
+### p2c.confirmCancelled => {"result":{"kind":"success","text":"已取消"},"confirmSnapshot":{"title":"隐藏 [1] 行 7 · Bash · 2.1KB？","message":"隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。","confirmLabel":"隐藏","cancelLabel":"取消"},"warns":[]}
+### p2d.200nodes => {"title":"选择要隐藏的 tool/result 节点（共 200 个，仅列最新 60 个；其余用 /redact nodes 翻页后 /redact hide <序号>）","titleCells":107,"titleTruncatedByRuntime":false,"optionCount":60,"first":{"id":"1","label":"[1] 行 401 · Bash · 2.1KB"},"last":{"id":"60","label":"[60] 行 283 · Bash · 2.1KB"},"result":{"kind":"success","text":"已隐藏 [1] 行 401 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"},"warns":[]}
+### p2e.widths => {"title":"选择要隐藏的 tool/result 节点（共 60 个，最新在前）","titleCells":51,"longestLabelCells":26,"anyLabelTruncated":false,"titleTruncated":false}
+### p2f.hostileToolNames => {"title":"选择要隐藏的 tool/result 节点（共 4 个，最新在前）","options":[{"id":"1","label":"[1] 行 9 · 中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名 · 87B"},{"id":"2","label":"[2] 行 7 · TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT…"},{"id":"3","label":"[3] 行 5 · ABC · 92B"},{"id":"4","label":"[4] 行 3 · Ba sh · 2.1KB"}],"confirmTitle":"隐藏 [4] 行 3 · Ba sh · 2.1KB？","confirmMessage":"隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。","result":{"kind":"success","text":"已隐藏 [4] 行 3 · Ba\u0007sh · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"},"warns":[]}
+### p2g.labelSample => [{"id":"1","label":"[1] 行 121 · Bash · 20480.1KB"},{"id":"2","label":"[2] 行 119 · Bash · 20480.1KB"},{"id":"3","label":"[3] 行 117 · Bash · 20480.1KB"}]
+### p2h.noService => {"result":{"kind":"error","text":"当前前端没有对话框服务 tuiDialogs · 改用 /redact nodes 看列表，或 /redact nodes full 导出到文件"}}
+### p2i.noNodes => {"result":{"kind":"success","text":"当前会话的 surface 上没有 tool/result 节点"},"observed":null}
+### p2j.redactRowMountedBeforeServiceRow => {"sawDialog":true,"result":{"kind":"success","text":"已隐藏 [1] 行 7 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"},"warns":[]}
+### p2k.commandsPrewarmedRedactFirst => {"sawDialog":false,"result":{"kind":"success","text":"已取消"},"warns":["dsh-tui: tuiDialogs.select received malformed data; cancelled"]}
+### p2l.entryInjectFix => {"sawDialog":true,"result":{"kind":"success","text":"已隐藏 [1] 行 7 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"},"warns":[]}
+### p2m.entryInjectWithoutServiceRow => {"fiberState":0,"commandRegistered":false}
+
+=== JSON ===
+{
+ "version": {
+  "DIALOG_DEFAULT_TIMEOUT_MS": 30000,
+  "INPUT_CELLS": 500,
+  "modExports": [
+   "DIALOG_DEFAULT_TIMEOUT_MS",
+   "INPUT_CELLS",
+   "TuiDialogRuntime",
+   "TuiDialogStore",
+   "default",
+   "getHostDialogStore"
+  ]
+ },
+ "p0.rootContextGet": {
+  "type": "object",
+  "select": "function"
+ },
+ "p0.propAccessWithoutInject": [
+  "THREW",
+  "cannot get property \"tuiDialogs\" without inject"
+ ],
+ "p1.looseRowGetAfterMount": {
+  "type": "object",
+  "methods": [
+   "select",
+   "confirm",
+   "input"
+  ]
+ },
+ "p1.hostStoreUnwrapped": true,
+ "p0b.looseRowMountedBeforeServiceRow": {
+  "sawDialog": false,
+  "warns": [
+   "dsh-tui: tuiDialogs.select received malformed data; cancelled"
+  ]
+ },
+ "p0c.callFromRootContext": {
+  "timerDelays": [],
+  "warns": [
+   "dsh-tui: tuiDialogs.select received malformed data; cancelled"
+  ]
+ },
+ "p0d.guards": [
+  {
+   "tag": "row-mounted-before-service-row",
+   "requirePluginCaller": "THREW: dsh-tui: probe requires a live Cordis activation context",
+   "bindCallerEffect": false
+  },
+  {
+   "tag": "row-mounted-after-service-row",
+   "requirePluginCaller": "OK",
+   "bindCallerEffect": true
+  }
+ ],
+ "p1a.snapshot": {
+  "kind": "select",
+  "title": "选择要隐藏的 tool/result 节点（共 3 个，最新在前）",
+  "options": [
+   {
+    "id": "1",
+    "label": "[1] 行 10 · Bash · 2.0KB"
+   },
+   {
+    "id": "2",
+    "label": "[2] 行 8 · Grep · 1.0KB"
+   }
+  ],
+  "key": "dlg-1"
+ },
+ "p1a.timerDelaysMs": [
+  120000
+ ],
+ "p1a.resolved": "2",
+ "p1a.warns": [],
+ "p1b.escCancel": {
+  "timerDelaysMs": [
+   30000
+  ],
+  "warns": []
+ },
+ "p1c.timeout250": {
+  "elapsedMs": 261,
+  "timerDelaysMs": [
+   250
+  ],
+  "queueEmptyAfterwards": true,
+  "warns": []
+ },
+ "p1d.timeout25h": {
+  "timerDelaysMs": [
+   86400000
+  ]
+ },
+ "p1e.timeoutMs.zero": [
+  30000
+ ],
+ "p1e.timeoutMs.negative": [
+  30000
+ ],
+ "p1e.timeoutMs.string": [
+  30000
+ ],
+ "p1e.timeoutMs.nan": [
+  30000
+ ],
+ "p1e.timeoutMs.infinity": [
+  30000
+ ],
+ "p1f.emptyOptions": {
+  "warns": [
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled"
+  ]
+ },
+ "p1g.noTitle": {
+  "confirmNoTitle": false,
+  "warns": [
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled",
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled",
+   "dsh-tui: tuiDialogs.confirm called without a title; cancelled"
+  ]
+ },
+ "p1h.optionCap": {
+  "sent": 200,
+  "rendered": 100,
+  "first": "1",
+  "last": "100"
+ },
+ "p1i.optionValidation": {
+  "sent": 7,
+  "rendered": 3,
+  "options": [
+   {
+    "id": "good",
+    "label": "a b",
+    "descLen": null
+   },
+   {
+    "id": "ver batim",
+    "label": "keep id verbatim",
+    "descLen": null
+   },
+   {
+    "id": "desc",
+    "label": "with description",
+    "descLen": 400
+   }
+  ],
+  "warns": []
+ },
+ "p1j.sanitized": {
+  "titleChars": 60,
+  "titleEndsEllipsis": true,
+  "labels": [
+   "ABC",
+   "a b c d",
+   "x y z",
+   "p q",
+   "行 12 · 中文工具 · 1.0KB"
+  ]
+ },
+ "p1k.nonScalarTitle": {
+  "confirmArrayTitle": false,
+  "warns": [
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled",
+   "dsh-tui: tuiDialogs.confirm called without a title; cancelled"
+  ]
+ },
+ "p1l.confirmSnapshotWithLabels": {
+  "kind": "confirm",
+  "title": "隐藏 [1] 行 100 · Bash · 2.0KB？",
+  "message": "隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。",
+  "confirmLabel": "隐藏",
+  "cancelLabel": "取消",
+  "key": "dlg-13"
+ },
+ "p1l.confirmTimerMs": [
+  120000
+ ],
+ "p1l.confirmTrue": {
+  "snapshot": {
+   "kind": "confirm",
+   "title": "隐藏 [1] 行 100 · Bash · 2.0KB？",
+   "message": "隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。",
+   "confirmLabel": "隐藏",
+   "cancelLabel": "取消",
+   "key": "dlg-13"
+  },
+  "value": true,
+  "warns": []
+ },
+ "p1l.confirmFalse": {
+  "value": false,
+  "snapshot": {
+   "confirmLabel": "",
+   "cancelLabel": "",
+   "message": "M"
+  }
+ },
+ "p1l.confirmNoMessageCancel": {
+  "value": false,
+  "snapshot": {
+   "kind": "confirm",
+   "title": "Q",
+   "confirmLabel": "",
+   "cancelLabel": "",
+   "key": "dlg-15"
+  }
+ },
+ "p1m.confirmNonStringLabels": {
+  "confirmLabel": "",
+  "cancelLabel": "42",
+  "value": false
+ },
+ "p1n.nonObjectRequest": {
+  "confirmUndefined": false,
+  "warns": [
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled",
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled",
+   "dsh-tui: tuiDialogs.select called without a title or options; cancelled",
+   "dsh-tui: tuiDialogs.confirm called without a title; cancelled"
+  ]
+ },
+ "p1o.teardown": {
+  "before": "still-pending"
+ },
+ "p1p.fifo": {
+  "first": "A",
+  "second": "B",
+  "a": "a",
+  "b": "b"
+ },
+ "p2a.happyPath": {
+  "observed": {
+   "kind": "select",
+   "title": "选择要隐藏的 tool/result 节点（共 3 个，最新在前）",
+   "optionCount": 3,
+   "options": [
+    {
+     "id": "1",
+     "label": "[1] 行 7 · Bash · 2.1KB"
+    },
+    {
+     "id": "2",
+     "label": "[2] 行 5 · Bash · 2.1KB"
+    },
+    {
+     "id": "3",
+     "label": "[3] 行 3 · Bash · 2.1KB"
+    }
+   ]
+  },
+  "confirmSnapshot": {
+   "title": "隐藏 [2] 行 5 · Bash · 2.1KB？",
+   "message": "隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。",
+   "confirmLabel": "隐藏",
+   "cancelLabel": "取消"
+  },
+  "timerMs": [
+   120000,
+   120000
+  ],
+  "warns": [],
+  "result": {
+   "kind": "success",
+   "text": "已隐藏 [2] 行 5 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"
+  },
+  "appended": [
+   "tool/result"
+  ]
+ },
+ "p2b.escOnSelect": {
+  "result": {
+   "kind": "success",
+   "text": "已取消"
+  },
+  "warns": []
+ },
+ "p2c.confirmCancelled": {
+  "result": {
+   "kind": "success",
+   "text": "已取消"
+  },
+  "confirmSnapshot": {
+   "title": "隐藏 [1] 行 7 · Bash · 2.1KB？",
+   "message": "隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。",
+   "confirmLabel": "隐藏",
+   "cancelLabel": "取消"
+  },
+  "warns": []
+ },
+ "p2d.200nodes": {
+  "title": "选择要隐藏的 tool/result 节点（共 200 个，仅列最新 60 个；其余用 /redact nodes 翻页后 /redact hide <序号>）",
+  "titleCells": 107,
+  "titleTruncatedByRuntime": false,
+  "optionCount": 60,
+  "first": {
+   "id": "1",
+   "label": "[1] 行 401 · Bash · 2.1KB"
+  },
+  "last": {
+   "id": "60",
+   "label": "[60] 行 283 · Bash · 2.1KB"
+  },
+  "result": {
+   "kind": "success",
+   "text": "已隐藏 [1] 行 401 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"
+  },
+  "warns": []
+ },
+ "p2e.widths": {
+  "title": "选择要隐藏的 tool/result 节点（共 60 个，最新在前）",
+  "titleCells": 51,
+  "longestLabelCells": 26,
+  "anyLabelTruncated": false,
+  "titleTruncated": false
+ },
+ "p2f.hostileToolNames": {
+  "title": "选择要隐藏的 tool/result 节点（共 4 个，最新在前）",
+  "options": [
+   {
+    "id": "1",
+    "label": "[1] 行 9 · 中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名中文工具名 · 87B"
+   },
+   {
+    "id": "2",
+    "label": "[2] 行 7 · TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT…"
+   },
+   {
+    "id": "3",
+    "label": "[3] 行 5 · ABC · 92B"
+   },
+   {
+    "id": "4",
+    "label": "[4] 行 3 · Ba sh · 2.1KB"
+   }
+  ],
+  "confirmTitle": "隐藏 [4] 行 3 · Ba sh · 2.1KB？",
+  "confirmMessage": "隐藏后从下一轮请求起模型不再看到它（磁盘字节仍在）。该节点会被永久遮蔽，无法还原。",
+  "result": {
+   "kind": "success",
+   "text": "已隐藏 [4] 行 3 · Ba\u0007sh · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"
+  },
+  "warns": []
+ },
+ "p2g.labelSample": [
+  {
+   "id": "1",
+   "label": "[1] 行 121 · Bash · 20480.1KB"
+  },
+  {
+   "id": "2",
+   "label": "[2] 行 119 · Bash · 20480.1KB"
+  },
+  {
+   "id": "3",
+   "label": "[3] 行 117 · Bash · 20480.1KB"
+  }
+ ],
+ "p2h.noService": {
+  "result": {
+   "kind": "error",
+   "text": "当前前端没有对话框服务 tuiDialogs · 改用 /redact nodes 看列表，或 /redact nodes full 导出到文件"
+  }
+ },
+ "p2i.noNodes": {
+  "result": {
+   "kind": "success",
+   "text": "当前会话的 surface 上没有 tool/result 节点"
+  },
+  "observed": null
+ },
+ "p2j.redactRowMountedBeforeServiceRow": {
+  "sawDialog": true,
+  "result": {
+   "kind": "success",
+   "text": "已隐藏 [1] 行 7 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"
+  },
+  "warns": []
+ },
+ "p2k.commandsPrewarmedRedactFirst": {
+  "sawDialog": false,
+  "result": {
+   "kind": "success",
+   "text": "已取消"
+  },
+  "warns": [
+   "dsh-tui: tuiDialogs.select received malformed data; cancelled"
+  ]
+ },
+ "p2l.entryInjectFix": {
+  "sawDialog": true,
+  "result": {
+   "kind": "success",
+   "text": "已隐藏 [1] 行 7 · Bash · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）"
+  },
+  "warns": []
+ },
+ "p2m.entryInjectWithoutServiceRow": {
+  "fiberState": 0,
+  "commandRegistered": false
+ }
+}

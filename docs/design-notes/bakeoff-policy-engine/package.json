@@ -1,0 +1,47 @@
+{
+  "name": "@yourorg/dsh-redaction",
+  "version": "0.1.0",
+  "description": "Rule-driven secret-redaction policy engine for DeepSeek Harness: preventive interception plus an append-only audit ledger.",
+  "license": "MIT",
+  "author": "Your Name <you@example.com>",
+  "keywords": ["dsh", "deepseek-harness", "cordis", "redaction", "secret-scanning", "dlp", "policy"],
+  "type": "module",
+  "engines": { "node": "^22.19 || >=24" },
+  "main": "src/index.js",
+  "bin": {
+    "dsh-redact": "bin/dsh-redact.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./config": "./src/config.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "bin",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/schemastery": "^3.18.2"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": { "optional": true },
+    "@deepseek-ai/schemastery": { "optional": true }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourorg/dsh-redaction.git"
+  }
+}

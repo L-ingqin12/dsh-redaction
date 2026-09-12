@@ -1,0 +1,12 @@
+node_modules/
+*.tgz
+*.log
+.DS_Store
+Thumbs.db
+
+# 会话日志与凭据永不入库
+*.jsonl.zstd
+*.quarantine-*
+*.before-undo-*
+.credentials.yaml
+settings.yaml

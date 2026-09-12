@@ -1,0 +1,56 @@
+PASS  ★ 夹具：改写前 DSH 真实后端可打开（读取端合法）  — 16 events
+PASS  ★ 夹具：tool/result 是真实消息形状（role=user + source.kind=tool）  — {"kind":"tool","callId":"c1"}
+PASS  BUG-1 非法计划返回 error（进程存活）  — 未执行：不能删除或清空第 1 行（头部），否则整份日志不可读
+PASS  BUG-1 文件未被改动
+PASS  BUG-1b 中间行删除返回 error  — 未执行：拒绝执行：删除中间行会让每行 seq 不再等于自己的行号，读取端会判定整份日志损坏（seq gap）。
+PASS  BUG-2 损坏帧返回 error  — 日志无法解析：帧魔数非法 @ 字节 96（不是本格式或已损坏）
+PASS  scan 命中 1 行  — 会话 sess-000 · 共 17 行 · 命中 1 行：10 · 未改动任何文件
+PASS  scan 不泄漏原文
+PASS  rollback 试算识别 3 轮（回退 1 轮 → 保留 2 轮，单行）  — 会话 sess-000 · 共 3 轮 · 回退 1 轮 → 保留 2 轮 · 删 5 行（自第 13 行起截断） · 试算未写盘，加 --commit 执行
+PASS  rollback 试算不写盘
+PASS  rollback 执行成功  — 会话 sess-000 · 共 3 轮 · 回退 1 轮 → 保留 2 轮 · 删 5 行（自第 13 行起截断） · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-06-640Z（仍含原文，确认无误后自行删除） · 缓存清理 0 · 下次打开…
+PASS  rollback 后结构完好
+PASS  rollback 删掉了第 3 轮
+PASS  rollback 保留前两轮
+PASS  rollback 未碰 SECRET 行
+PASS  rollback 留了隔离备份
+PASS  ★ rollback 后 DSH 真实后端可打开  — 11 events
+PASS  undo 找到备份（命名 + 体积 + 当前体积，单行）  — sess-000 · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-06-640Z（1111B）· 当前 808B · 试算未写盘，加 --commit 恢复
+PASS  undo 执行成功  — sess-000 · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-06-640Z（1111B）· 当前 808B · 已恢复（已校验） · 撤销前状态另存 session.v3.jsonl.zstd.before-undo-2026-09-12T11-45-06-663Z · 缓存清理…
+PASS  undo 恢复了第 3 轮
+PASS  undo 留了撤销前快照
+PASS  undo 后无备份时再撤销报错
+PASS  ★ undo 后 DSH 真实后端可打开（备份先校验再安装）  — 16 events
+PASS  apply 执行成功  — 已脱敏 sess-000 · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-06-681Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写6 · 缓存清理 0 · 另有 8 处需自行处理（见文档 安全模型）
+PASS  apply 抹掉了原文
+PASS  apply 行数不变
+PASS  apply 后 seq 仍密集
+PASS  ★ 普通（非 renumber）原地脱敏后 DSH 真实后端仍可打开  — 16 events
+PASS  ★ 脱敏后事件数与改写前一致  — 16 → 16
+PASS  拒绝 apply 当前会话
+PASS  拒绝 rollback 当前会话
+PASS  拒绝 undo 当前会话
+PASS  nodes 单行（渲染端会把换行压掉）  — "共 2 个 tool/result（最新在前）：[1] 7 web_fetch 170B ｜ [2] 4 pwsh 18"
+PASS  nodes 显示格 <=200  — 字符 84
+PASS  nodes [1] 是最新的（seq 5 → 行 7）  — 共 2 个 tool/result（最新在前）：[1] 7 web_fetch 170B ｜ [2] 4 pwsh 181B 隐藏用 /redact hide <序号>
+PASS  nodes [2] 是较早的（seq 2 → 行 4）
+PASS  nodes 最新在前
+PASS  nodes 提示短命令而非长路径
+PASS  nodes 不显示正文
+PASS  nodes 不泄漏内部 seq
+PASS  hide <序号> 解析为最新那条（行 7）  — 试算：将隐藏 1 个节点（seq 5）· 加 --commit 执行
+PASS  hide <序号> 试算不写会话
+PASS  hide <序号> 越界报错  — 序号 99 超出范围（当前 1-2）
+PASS  hide --lines 试算命中 1 个节点  — 试算：将隐藏 1 个节点（seq 5）· 加 --commit 执行
+PASS  hide --lines 未命中  — 试算：未命中任何 tool/result 节点
+PASS  hide --commit 成功  — 已隐藏 1 个节点 · 下一轮请求起模型不再看到 · 磁盘字节仍在（会话关闭后用 apply 清理）
+PASS  hide 结果也是单行
+PASS  hide 发了遮蔽价签
+PASS  hide 的价签与替换紧邻
+PASS  hide 用 surfaceOp 替换同一节点
+PASS  hide 引用来源节点
+PASS  hide 已把正文换成占位符  — [已移除]
+PASS  hide 保持 tool/result 的真实消息结构  — {"role":"user","source":{"kind":"tool","callId":"call-bb"}}
+PASS  hide 保留 source.callId（配对不破）
+
+54/54 通过

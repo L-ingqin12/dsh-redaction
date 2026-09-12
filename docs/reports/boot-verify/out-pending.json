@@ -1,0 +1,1 @@
+{"scenario":"pending","outcome":"BOOT_ABORTED","ms":208,"errorName":"Error","message":"dsh: plugin tree failed to load: dsh: 1 entry did not activate\n./fix-pending.mjs: pending (waiting for service: neverProvidedService)","cause":"dsh: 1 entry did not activate\n./fix-pending.mjs: pending (waiting for service: neverProvidedService)"}

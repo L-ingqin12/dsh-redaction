@@ -1,0 +1,28 @@
+===== BEFORE =====
+dd21d56e6bf31dd6  %USERPROFILE%\dsh-plugin-redact\index.js
+1ea235d3d36b0ff9  %USERPROFILE%\dsh-plugin-redact\lib\engine.mjs
+be1ae81f9f5d2507  %USERPROFILE%\dsh-plugin-redact\cordis.patch.yml
+0e21b9ef9426a661  %USERPROFILE%\dsh-plugin-content-policy\index.js
+3e2e5e67780bb5bf  %USERPROFILE%\dsh-plugin-content-policy\lib\scrub.mjs
+c6d21928f79ac9d3  %USERPROFILE%\dsh-plugin-content-policy\cordis.patch.yml
+real            BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2] commands=["redact"]
+realEcho        BOOT_OK  entries=[include:2 dsh-redact:2 dsh-content-policy:2 x-echo:2] commands=["redact"]
+dialogsAbsent   BOOT_OK  entries=[include:2 dsh-redact:2] commands=["redact"]
+dialogsBefore   BOOT_OK  entries=[include:2 x-dialogs:2 dsh-redact:2] commands=["redact"]
+dialogsAfter    BOOT_OK  entries=[include:2 dsh-redact:2 x-dialogs:2] commands=["redact"]
+throwImport     BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to import loader entry x-throw-import (./fix-throw-import.mjs): BOOM-IMPORT: synthetic module threw durin
+throwApply      BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to apply loader entry x-throw-apply (./fix-throw-apply.mjs): BOOM-APPLY: synthetic plugin threw inside ap
+hang            BOOT_NEVER_SETTLED  __HANG__ after 6000ms
+missing         BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to import loader entry x-missing (dsh-plugin-does-not-exist-xyz): Cannot find package 'dsh-plugin-does-no
+pending         BOOT_ABORTED  dsh: plugin tree failed to load: dsh: 1 entry did not activate
+badConfig       BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to apply loader entry dsh-content-policy (dsh-plugin-content-policy): invalid config:
+badApply        BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to apply loader entry dsh-content-policy (dsh-plugin-content-policy): content-policy: maxScannedBytes 必须是
+dupRules        BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to apply loader entry dsh-content-policy (dsh-plugin-content-policy): content-policy: 规则配置有误，已拒绝装配：
+redactBadShape  BOOT_ABORTED  dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include): failed to apply loader entry dsh-redact (dsh-plugin-redact): dsh-redact: invalid config: $.root must be a non-em
+===== AFTER =====
+dd21d56e6bf31dd6  %USERPROFILE%\dsh-plugin-redact\index.js
+1ea235d3d36b0ff9  %USERPROFILE%\dsh-plugin-redact\lib\engine.mjs
+be1ae81f9f5d2507  %USERPROFILE%\dsh-plugin-redact\cordis.patch.yml
+0e21b9ef9426a661  %USERPROFILE%\dsh-plugin-content-policy\index.js
+3e2e5e67780bb5bf  %USERPROFILE%\dsh-plugin-content-policy\lib\scrub.mjs
+c6d21928f79ac9d3  %USERPROFILE%\dsh-plugin-content-policy\cordis.patch.yml

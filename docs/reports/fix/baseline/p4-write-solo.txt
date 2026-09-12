@@ -1,0 +1,15 @@
+      → 写后+追加 = 1340B，ftruncate(1251) 之后 = 1251B（追加的 71B 帧消失）
+PASS  A. live 覆盖会在 write→truncate 窗口内吃掉并发追加的帧  — mid=1340 final=1251
+      → 之后 DSH 打开：ok=true events=20
+      → 半写状态：1265B，引擎 scanFrames 可解析=false 帧魔数非法 @ 字节 1249（不是本格式或已损坏）
+      → 引擎 inspectBuffer: frames=- lines=- parseErrors=- fatal=帧魔数非法 @ 字节 1249（不是本格式或已损坏）
+      → DSH 打开半写文件：ok=false SessionPersistenceCorruptionError: session "rt-live-crash": stored log is corrupt: Error: corrupt Zstandard session log: invalid frame magic at byte 1249
+PASS  B. 半写状态不是「无提示的安全状态」（要么打不开、要么静默少事件）  — 硬拒绝
+      → 第 1 轮：并发两次 apply → 备份 2 个，seq=ok lines=21
+      → 第 2 轮：并发两次 apply → 备份 2 个，seq=ok lines=21
+      → 第 3 轮：并发两次 apply → 备份 2 个，seq=ok lines=21
+      → 8 轮并发：备份被覆盖 0 次，最终日志结构损坏 0 次
+PASS  C. 并发 CLI apply 不会覆盖彼此的隔离备份  — 0/8 轮只剩 <2 个备份
+PASS  C. 并发 CLI apply 不会产出损坏日志  — 0/8 轮最终日志 seq/结构异常
+
+P4: 未发现问题

@@ -1,0 +1,21 @@
+      → 已清理缓存 2 个 · target-s · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  A. 只删掉本会话的 .json / .json.bak.*
+PASS  B. 兄弟 id（前缀相同）不受影响
+PASS  C. session id ".." 不能删除 cache 之外的文件  — 已清理缓存 0 个 · .. · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  C. session id "../.." 不能删除 cache 之外的文件  — 已清理缓存 0 个 · ../.. · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  C. session id "..\..\rt-redact" 不能删除 cache 之外的文件  — 已清理缓存 0 个 · ..\..\rt · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  C. session id "*" 不能删除 cache 之外的文件  — 已清理缓存 0 个 · * · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  C. session id "target-session/*" 不能删除 cache 之外的文件  — 已清理缓存 0 个 · target-s · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  C. session id "%USERPROFILE%/AppData/Local/Temp/rt-redact/SENTINEL" 不能删除 cache 之外的文件  — 已清理缓存 0 个 · C:/Users · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  C. session id "target-session.json" 不能删除 cache 之外的文件  — 已清理缓存 0 个 · target-s · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+      → 目录内容: other-session.json | target-session-dir.json | target-session-sibling.json
+      → 返回 kind=success text=已清理缓存 0 个 · target-s · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+PASS  D. 缓存里存在同名目录时 purge 不抛未捕获异常  — 已清理缓存 0 个 · target-s · 仍有 8 处本工具不动：%USERPROFILE%\.dsh\storages\session_projcache.json（旧版聚合缓存，若删掉单会话缓存它会回灌，建议一并删除） 等
+      → 返回: 写入失败（日志未被改动，已删除刚生成的隔离备份）：EISDIR: illegal operation on a directory, open '%USERPROFILE%\AppData\Local\Temp\rt-redact\root\_no-cwd\rt-tmp-leak\session.v3.jsonl.zstd.redact-tmp'
+      → 残留隔离备份 0 个（含原文），.redact-tmp 是目录=true
+PASS  E. 写入失败时不留含原文的隔离备份  — 实际 0 个
+      → 返回 kind=success；日志是否已被改写=true；隔离备份=1 个
+PASS  F. purgeCache 抛错时命令仍返回结果（不是异常逃出）  — 已脱敏 rt-post- · 备份 session.v3.jsonl.zstd.quarantine-2026-09-12T11-45-25-556Z（仍含原文，确认无误后自行删除） · 行 删0/空0/改0/换1 · 帧 留1/写2 · 缓存清理 0 · 另有 8 处需自行处理（见文档 安全模型）
+PASS  F. 若命令报失败，日志不应已被改写（要么都不做，要么都告知）  — kind=success changed=true（用户看到失败，但盘上已改写并留下含原文备份）
+
+P7: 未发现问题
