@@ -6,6 +6,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# 最小权限：这个仓库是公开的，pull_request 会执行 PR 里的代码。
+# 默认 token 权限比这里需要的宽；只读 contents 足够跑测试。
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
