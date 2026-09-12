@@ -59,6 +59,10 @@ jobs:
         run: node test/torn-recovery.mjs
         working-directory: packages/dsh-plugin-redact
 
+      - name: dsh-plugin-redact — path guard / cwd independence
+        run: node test/path-guard.mjs
+        working-directory: packages/dsh-plugin-redact
+
       - name: dsh-plugin-redact — CLI smoke
         run: node test/preflight.mjs
         working-directory: packages/dsh-plugin-redact

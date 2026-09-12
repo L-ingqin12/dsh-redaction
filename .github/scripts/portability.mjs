@@ -25,6 +25,14 @@ const SKIP_DIRS = new Set(['node_modules', 'docs', '.git'])
 /** 行首注释行直接跳过，避免注释里的示例路径被当成代码。 */
 const isCommentLine = (line) => /^\s*(\/\/|\*|\/\*|#)/.test(line)
 
+/**
+ * 显式豁免标记：行内含它就跳过。
+ * 用途只有一个 —— 测试里**故意**写出平台专有字样来断言它被拒绝
+ * （例如 path-guard 用 'C:\Windows' 当作越界输入）。
+ * 刻意做成显式且可 grep：出现即代表有人做过一次判断，而不是规则悄悄失明。
+ */
+const ALLOW_MARKER = 'portability-allow'
+
 const RULES = [
   {
     id: 'win-only-env',
@@ -84,6 +92,7 @@ for (const pkg of PACKAGES) {
       scanned++
       lines.forEach((line, i) => {
         if (isCommentLine(line)) return
+        if (line.includes(ALLOW_MARKER)) return
         for (const rule of RULES) {
           const re = rule.re.global ? rule.re : new RegExp(rule.re.source, `${rule.re.flags}g`)
           re.lastIndex = 0

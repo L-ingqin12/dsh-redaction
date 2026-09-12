@@ -127,6 +127,17 @@ for (const pkg of PACKAGES) {
     )
     const nameRe = new RegExp(`name:\\s*${manifest.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'm')
     check('patch 里有 name 等于包名的 loader entry', nameRe.test(text))
+
+    // 路径必须由 dshHomePath() 推导，不能写死、也不能是相对路径 ——
+    // 否则换一个 DSH_HOME 或换一个工作目录就指到别处去了。
+    const rootLine = text.split(/\r?\n/).find((l) => /^\s*root\s*:/.test(l))
+    if (rootLine !== undefined) {
+      check(
+        'patch 的 root 由 dshHomePath() 推导（不写死路径、不依赖 cwd）',
+        /dshHomePath\(/.test(rootLine),
+        `实际：${rootLine.trim()}`,
+      )
+    }
   }
 }
 

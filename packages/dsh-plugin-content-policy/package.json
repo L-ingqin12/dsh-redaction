@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-content-policy",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Preventive content policy for DeepSeek Harness tool results: rewrite matched text with regex rules, or drop/truncate unpredictable payloads by field path before they are normalised, rendered, or persisted. The upstream counterpart to dsh-plugin-redact.",
   "type": "module",
   "main": "index.js",
@@ -18,7 +18,8 @@
     "test/harness.mjs",
     "README.md",
     "README.zh.md",
-    "LICENSE"
+    "LICENSE",
+    "SECURITY.md"
   ],
   "scripts": {
     "test": "node test/selftest.mjs && node test/harness.mjs",

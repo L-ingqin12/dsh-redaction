@@ -115,13 +115,32 @@ function collectNodes(session, argsCells = 120) {
 
 const dshHome = () => process.env.DSH_HOME ?? path.join(os.homedir(), '.dsh')
 
+/**
+ * 会话 id 是本工具**唯一**由外部输入决定文件路径的地方，而它会改写日志。
+ * 命令行参数与 agent.session.id 都会走到这里，所以先设一道闸。
+ * 首字符不允许是点，于是 `.` / `..` 直接被挡掉；`/`、`\`、`:` 也不在白名单里，
+ * 拼不出多层路径，更拼不出盘符。
+ */
+const SESSION_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
+
+/** 第二道闸：无论 id 长什么样，最终路径必须严格落在 root 之内。 */
+function isInside(root, target) {
+  const r = path.resolve(root)
+  return path.resolve(target).startsWith(r + path.sep)
+}
+
 /** 在 <root>/<project>/<sessionId>/ 下选出编号最高的 canonical 日志。 */
 function resolveLog(root, sessionId) {
   if (!fs.existsSync(root)) return { error: `会话根目录不存在: ${root}` }
+  if (typeof sessionId !== 'string' || !SESSION_ID_RE.test(sessionId)) {
+    return { error: `会话 id 非法（只允许字母、数字、点、下划线、连字符，且不以点开头）：${sessionId}` }
+  }
   const hits = []
   for (const project of fs.readdirSync(root, { withFileTypes: true })) {
     if (!project.isDirectory()) continue
     const dir = path.join(root, project.name, sessionId)
+    // 字符白名单已经排除了分隔符，这里是纵深防御：万一白名单被放宽，也不允许越出 root。
+    if (!isInside(root, dir)) continue
     if (!fs.existsSync(dir)) continue
     for (const f of fs.readdirSync(dir)) {
       const m = /^session(?:\.v(\d+))?\.jsonl\.zstd$/.exec(f)
