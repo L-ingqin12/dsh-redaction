@@ -32,6 +32,7 @@
     "node": ">=22.15.0"
   },
   "keywords": [
+    "dsh-plugin",
     "dsh",
     "deepseek-harness",
     "cordis",

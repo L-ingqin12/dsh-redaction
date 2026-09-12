@@ -107,6 +107,27 @@ for (const pkg of PACKAGES) {
   // 5. 入口自己得在包里
   const main = (manifest.main ?? 'index.js').replace(/^\.\//, '')
   check(`main (${main}) 在包里`, shipped.has(main))
+
+  // 6. 社区市场共用的 manifest 闸门：dsh.bundle.patch 指向的文件必须在包里，
+  //    且必须是**顶层 YAML 数组**、含一条 name 等于包名的 loader entry。
+  //    这一条决定市场给不给 manifest_verified（可一键安装）还是只列出可浏览。
+  const patchRel = manifest.dsh?.bundle?.patch?.replace(/^\.\//, '')
+  if (patchRel === undefined) {
+    check('声明了 dsh.bundle.patch', false, 'package.json 里没有 dsh.bundle.patch')
+  } else {
+    check(`声明了 dsh.bundle.patch（${patchRel}）`, true)
+    check('patch 文件在 tarball 里', shipped.has(patchRel), patchRel)
+    const patchPath = path.join(dir, patchRel)
+    const text = fs.existsSync(patchPath) ? fs.readFileSync(patchPath, 'utf8') : ''
+    const firstCode = text.split(/\r?\n/).find((l) => l.trim() !== '' && !/^\s*#/.test(l))
+    check(
+      'patch 是顶层 YAML 数组（首个有效行以 - 开头）',
+      firstCode !== undefined && /^\s*-\s/.test(firstCode),
+      `实际首个有效行：${firstCode ?? '(文件为空)'}`,
+    )
+    const nameRe = new RegExp(`name:\\s*${manifest.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'm')
+    check('patch 里有 name 等于包名的 loader entry', nameRe.test(text))
+  }
 }
 
 console.log(`\n${pass} 项通过，${fail} 项失败`)
