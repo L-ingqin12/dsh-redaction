@@ -24,6 +24,13 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      # 放在测试之前：纯静态、秒级、不需要依赖，失败信号最快。
+      # 它拦住的是「只在 Windows 上能跑」的写法 —— preflight.mjs 曾用
+      # process.env.USERPROFILE，在 ubuntu 上 undefined 直接 TypeError。
+      # 自检会先注入一次该缺陷确认守卫真会报错，再恢复原文件。
+      - name: Repo — portability guard (self-verifying)
+        run: node .github/scripts/portability.selftest.mjs
+
       # 这两个包没有依赖，只有 optional peerDependencies；npm install 只是为了拿到可解析的布局。
       - name: Install (no runtime deps)
         run: npm install --no-audit --no-fund

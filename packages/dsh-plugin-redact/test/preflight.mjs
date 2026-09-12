@@ -1,5 +1,7 @@
 // 起飞前检查：模块可导入、命令可注册、list 子命令可跑通（只读目录元数据，不读内容）。
 import path from 'node:path'
+import os from 'node:os'
+import { fileURLToPath } from 'node:url'
 
 const mod = await import(new URL('../index.js', import.meta.url).href)
 console.log('导出名        :', Object.keys(mod).join(', '))
@@ -9,9 +11,12 @@ console.log('apply 是函数  :', typeof mod.apply === 'function')
 
 let captured = null
 const ctx = { commands: { register(def) { captured = def } }, get: () => undefined }
+// 只用 os.homedir()，不碰 USERPROFILE —— 后者在 Linux/macOS 上不存在。
+const DSH_HOME = process.env.DSH_HOME ?? path.join(os.homedir(), '.dsh')
+
 mod.apply(ctx, {
-  root: path.join(process.env.DSH_HOME ?? path.join(process.env.USERPROFILE, '.dsh'), 'sessions'),
-  cacheRoot: path.join(process.env.DSH_HOME ?? path.join(process.env.USERPROFILE, '.dsh'), 'storages'),
+  root: path.join(DSH_HOME, 'sessions'),
+  cacheRoot: path.join(DSH_HOME, 'storages'),
   placeholder: '[已移除]',
 })
 
@@ -41,7 +46,7 @@ console.log(out4.kind, '|', out4.text.split('\n')[0])
 // hide：无 surface 的假会话应给出明确错误，而不是抛异常
 import fs from 'node:fs'
 fs.writeFileSync(new URL('./tmp-plan.json', import.meta.url), JSON.stringify({ substitutions: [{ find: 'ZZZ-NOT-PRESENT', replace: '[已移除]' }] }))
-const planPath = new URL('./tmp-plan.json', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')
+const planPath = fileURLToPath(new URL('./tmp-plan.json', import.meta.url))
 
 const out5 = await captured.handler({ rawInput: `hide "${planPath}"`, agent: { session: { id: 'cur' } } })
 console.log('\n--- hide（会话无 surface） ---')

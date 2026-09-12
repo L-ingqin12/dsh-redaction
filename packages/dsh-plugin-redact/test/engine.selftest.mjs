@@ -9,9 +9,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'
 import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { scanFrames, inspectBuffer, checkSeqDensity } from '../lib/engine.mjs'
 
-const DIR = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')))
+// fileURLToPath 而不是 .pathname：后者在含空格/中文的路径下会留下 %20 之类的转义。
+const DIR = path.dirname(fileURLToPath(import.meta.url))
 const CLI = path.join(DIR, '..', 'bin', 'dsh-redact.mjs')
 const CHECKSUM = { params: { [zlib.constants.ZSTD_c_checksumFlag]: 1 } }
 const frame = (text) => zlib.zstdCompressSync(Buffer.from(text, 'utf8'), CHECKSUM)
@@ -138,6 +140,14 @@ check('verify 正常退出', verifyOk)
 fs.rmSync(log + '.new', { force: true })
 run(['plan', log, '--plan', path.join(DIR, 'plan-inplace.json')])
 check('plan 试算不写文件', !fs.existsSync(log + '.new'))
+
+// 清理本套件产生的夹具（否则会被一起提交进包）
+for (const f of [
+  'fixture.jsonl.zstd', 'fixture.jsonl.zstd.new', 'needle.txt',
+  'plan-inplace.json', 'plan-head.json', 'plan-seq.json', 'broken.zstd',
+]) {
+  fs.rmSync(path.join(DIR, f), { force: true })
+}
 
 console.log(`\n${passed}/${total} 通过`)
 fs.rmSync(log + '.new', { force: true })

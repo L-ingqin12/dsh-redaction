@@ -50,6 +50,40 @@ The `dsh-plugin-redact` engine is additionally validated by opening its output w
 
 Requires **Node >= 22.15** for the zlib zstd API. The plugins themselves have no runtime dependencies — only optional peers.
 
+### Reproducing these checks locally
+
+```bash
+cd packages/dsh-plugin-redact        && npm test   # engine 34 + handler 248 + torn-tail 11 + CLI smoke
+cd packages/dsh-plugin-content-policy && npm test  # the two pure suites: 45 + 36
+node .github/scripts/portability.selftest.mjs      # from the repo root
+```
+
+`.github/workflows/ci.yml` runs those same commands on `ubuntu-latest` and `windows-latest` across Node `22.15`, `22.x` and `24.x`. The suites that need a real DSH install are deliberately **not** in CI: they derive the install location from `DSH_HOME` and exit `3` when it is missing, rather than passing vacuously.
+
+If you develop on Windows you can reproduce the Linux leg before pushing, instead of waiting for a red build. WSL is enough — no Docker needed:
+
+```bash
+curl -fsSL https://nodejs.org/dist/v22.21.0/node-v22.21.0-linux-x64.tar.xz | tar -xJ -C /opt
+/opt/node-v22.21.0-linux-x64/bin/node test/engine.selftest.mjs
+```
+
+#### Why there is a portability guard
+
+The first CI run failed after 37 s: `test/preflight.mjs` read `process.env.USERPROFILE`, which is `undefined` on Linux, so `path.join(undefined, '.dsh')` threw `ERR_INVALID_ARG_TYPE`. That file is in the npm `files` allowlist, so **every non-Windows consumer running `npm test` would have hit it**. A test run on Windows alone cannot see this class of bug — it is invisible precisely where it is written.
+
+`.github/scripts/portability.mjs` therefore statically scans the shipped code and tests of both packages for four Windows-only assumptions:
+
+| Rule | What it catches |
+|---|---|
+| `win-only-env` | `USERPROFILE` / `HOMEDRIVE` / `APPDATA` / `LOCALAPPDATA` used without an immediately following `??` or `\|\|` fallback |
+| `import-meta-pathname` | `import.meta.url` combined with `.pathname`, which leaves `%20` in paths containing spaces |
+| `hardcoded-win-path` | A hard-coded drive letter in a string literal |
+| `path-win32` | `path.win32`, which forces Windows semantics on every platform |
+
+The rule for `win-only-env` is deliberately about *the variable*, not the line: `DSH_HOME ?? path.join(process.env.USERPROFILE, '.dsh')` contains a `??` and is still broken.
+
+Its self-test is the point of it. `portability.selftest.mjs` **injects the real `USERPROFILE` defect back into `preflight.mjs`**, asserts that the guard fails and names both the file and the correct line, then restores the file in a `finally`. A guard that cannot fail is worse than no guard, and a line number hard-coded into the test is a guard that goes red for the wrong reason.
+
 ## License
 
 MIT — see [`LICENSE`](LICENSE).

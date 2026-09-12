@@ -10,3 +10,9 @@ Thumbs.db
 *.before-undo-*
 .credentials.yaml
 settings.yaml
+
+# 测试跑起来时自建自清的临时件：漏删了也不要入库
+packages/*/test/needle.txt
+packages/*/test/broken.zstd
+packages/*/test/plan-*.json
+packages/*/test/tmp-plan.json
