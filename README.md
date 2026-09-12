@@ -94,3 +94,5 @@ The `files` allowlist in each `package.json` is maintained by hand, and `index.j
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
+
+Maintainers: [`PUBLISHING.md`](PUBLISHING.md) covers the npm release steps and the pre-publish gates.

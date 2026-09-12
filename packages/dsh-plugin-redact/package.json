@@ -42,6 +42,18 @@
     "tui"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/L-ingqin12/dsh-redaction.git",
+    "directory": "packages/dsh-plugin-redact"
+  },
+  "homepage": "https://github.com/L-ingqin12/dsh-redaction#readme",
+  "bugs": {
+    "url": "https://github.com/L-ingqin12/dsh-redaction/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
@@ -60,6 +72,7 @@
     }
   },
   "scripts": {
-    "test": "node test/engine.selftest.mjs && node test/handler.selftest.mjs && node test/torn-recovery.mjs && node test/preflight.mjs"
+    "test": "node test/engine.selftest.mjs && node test/handler.selftest.mjs && node test/torn-recovery.mjs && node test/preflight.mjs",
+    "prepublishOnly": "npm test"
   }
 }

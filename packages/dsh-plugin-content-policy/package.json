@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-content-policy",
   "version": "0.2.0",
-  "description": "预防式内容策略：在 DSH 工具结果被规范化/落盘之前改写它 —— 正则规则改写命中文本，结构最小化（strip）按字段路径整段丢弃/截断无法预判的载荷。dsh-plugin-redact 的事前对应物。",
+  "description": "Preventive content policy for DeepSeek Harness tool results: rewrite matched text with regex rules, or drop/truncate unpredictable payloads by field path before they are normalised, rendered, or persisted. The upstream counterpart to dsh-plugin-redact.",
   "type": "module",
   "main": "index.js",
   "exports": {
@@ -22,6 +22,7 @@
   ],
   "scripts": {
     "test": "node test/selftest.mjs && node test/harness.mjs",
+    "prepublishOnly": "npm test",
     "test:pure": "node test/selftest.mjs",
     "test:config": "node test/config-schemastery.mjs",
     "test:registry": "node test/registry-e2e.mjs"
@@ -41,6 +42,18 @@
     "tool-result"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/L-ingqin12/dsh-redaction.git",
+    "directory": "packages/dsh-plugin-content-policy"
+  },
+  "homepage": "https://github.com/L-ingqin12/dsh-redaction#readme",
+  "bugs": {
+    "url": "https://github.com/L-ingqin12/dsh-redaction/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
